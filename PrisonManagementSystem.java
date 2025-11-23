@@ -7,8 +7,8 @@ import java.util.Date;
 
 public class PrisonManagementSystem extends JFrame {
     private JTabbedPane tabbedPane;
-    private DefaultTableModel prisonerModel, staffModel, cellModel, visitorModel;
-    private JTable prisonerTable, staffTable, cellTable, visitorTable;
+    private DefaultTableModel prisonerModel, staffModel, cellModel;
+    private JTable prisonerTable, staffTable, cellTable;
     
     public PrisonManagementSystem() {
         setTitle("Prison Management System");
@@ -24,7 +24,6 @@ public class PrisonManagementSystem extends JFrame {
         tabbedPane.addTab("Prisoners", createPrisonerPanel());
         tabbedPane.addTab("Staff", createStaffPanel());
         tabbedPane.addTab("Cells", createCellPanel());
-        tabbedPane.addTab("Visitors", createVisitorPanel());
         
         add(tabbedPane);
     }
@@ -45,7 +44,7 @@ public class PrisonManagementSystem extends JFrame {
         statsPanel.add(createStatCard("Total Prisoners", "0", new Color(52, 152, 219)));
         statsPanel.add(createStatCard("Total Staff", "0", new Color(46, 204, 113)));
         statsPanel.add(createStatCard("Occupied Cells", "0", new Color(231, 76, 60)));
-        statsPanel.add(createStatCard("Visitors Today", "0", new Color(241, 196, 15)));
+        statsPanel.add(createStatCard("Available Cells", "0", new Color(241, 196, 15)));
         
         panel.add(statsPanel, BorderLayout.CENTER);
         
@@ -181,39 +180,6 @@ public class PrisonManagementSystem extends JFrame {
         cellModel = new DefaultTableModel(columns, 0);
         cellTable = new JTable(cellModel);
         JScrollPane scrollPane = new JScrollPane(cellTable);
-        panel.add(scrollPane, BorderLayout.CENTER);
-        
-        return panel;
-    }
-    
-    private JPanel createVisitorPanel() {
-        JPanel panel = new JPanel(new BorderLayout(10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        
-        // Top panel
-        JPanel topPanel = new JPanel(new BorderLayout());
-        JLabel title = new JLabel("Visitor Management");
-        title.setFont(new Font("Arial", Font.BOLD, 18));
-        topPanel.add(title, BorderLayout.WEST);
-        
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton addBtn = new JButton("Register Visit");
-        JButton deleteBtn = new JButton("Delete");
-        
-        addBtn.addActionListener(e -> showAddVisitorDialog());
-        deleteBtn.addActionListener(e -> deleteSelectedRow(visitorTable, visitorModel));
-        
-        buttonPanel.add(addBtn);
-        buttonPanel.add(deleteBtn);
-        topPanel.add(buttonPanel, BorderLayout.EAST);
-        
-        panel.add(topPanel, BorderLayout.NORTH);
-        
-        // Table
-        String[] columns = {"Visitor ID", "Visitor Name", "Prisoner Name", "Relationship", "Visit Date", "Visit Time", "Status"};
-        visitorModel = new DefaultTableModel(columns, 0);
-        visitorTable = new JTable(visitorModel);
-        JScrollPane scrollPane = new JScrollPane(visitorTable);
         panel.add(scrollPane, BorderLayout.CENTER);
         
         return panel;
@@ -382,63 +348,6 @@ public class PrisonManagementSystem extends JFrame {
                 securityBox.getSelectedItem()
             };
             cellModel.addRow(row);
-            dialog.dispose();
-        });
-        
-        cancelBtn.addActionListener(e -> dialog.dispose());
-        
-        panel.add(saveBtn);
-        panel.add(cancelBtn);
-        
-        dialog.add(panel);
-        dialog.setVisible(true);
-    }
-    
-    private void showAddVisitorDialog() {
-        JDialog dialog = new JDialog(this, "Register Visit", true);
-        dialog.setSize(400, 400);
-        dialog.setLocationRelativeTo(this);
-        
-        JPanel panel = new JPanel(new GridLayout(8, 2, 5, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-        
-        JTextField visitorIdField = new JTextField();
-        JTextField visitorNameField = new JTextField();
-        JTextField prisonerNameField = new JTextField();
-        JTextField relationshipField = new JTextField();
-        JTextField dateField = new JTextField();
-        JTextField timeField = new JTextField();
-        JComboBox<String> statusBox = new JComboBox<>(new String[]{"Scheduled", "Completed", "Cancelled"});
-        
-        panel.add(new JLabel("Visitor ID:"));
-        panel.add(visitorIdField);
-        panel.add(new JLabel("Visitor Name:"));
-        panel.add(visitorNameField);
-        panel.add(new JLabel("Prisoner Name:"));
-        panel.add(prisonerNameField);
-        panel.add(new JLabel("Relationship:"));
-        panel.add(relationshipField);
-        panel.add(new JLabel("Visit Date:"));
-        panel.add(dateField);
-        panel.add(new JLabel("Visit Time:"));
-        panel.add(timeField);
-        panel.add(new JLabel("Status:"));
-        panel.add(statusBox);
-        
-        JButton saveBtn = new JButton("Save");
-        JButton cancelBtn = new JButton("Cancel");
-        
-        saveBtn.addActionListener(e -> {
-            Object[] row = {
-                visitorIdField.getText(),
-                visitorNameField.getText(),
-                prisonerNameField.getText(),
-                relationshipField.getText(),
-                dateField.getText(),
-                timeField.getText(),
-                statusBox.getSelectedItem()
-            };
-            visitorModel.addRow(row);
             dialog.dispose();
         });
         
