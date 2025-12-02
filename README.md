@@ -55,6 +55,7 @@ A simple Prison Management and Information System (PMIS) to record inmate check-
 - Daily roll call: iterate Check-in Records for the day, mark missing inmates and generate alerts ✅.
 - Activity report: traverse an inmate’s LinkedList to compute total activity time per week 📊.
 - Undo admin mistake: pop last action from Stack to revert a wrong check-in or alert dismissal ↩️.
+- Good follow up.
 - Alert processing: staff dequeues next pending alert, investigates, marks processed 🧾.
 
 ## Implementation Notes 🛠️
