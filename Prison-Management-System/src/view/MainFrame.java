@@ -79,6 +79,9 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         
+   
+        
+        
     }     
      
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -467,7 +470,7 @@ public class MainFrame extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -698,6 +701,8 @@ public class MainFrame extends javax.swing.JFrame {
         // For now, just navigate to dashboard (authentication will be added later)
         // Load data to table
         controller.loadPrisonerToTable(PrisonerRecordTable);
+        // Setup action buttons in table
+        PrisonerDialogHelper.setupTableButtons(PrisonerRecordTable, controller, this);
         showAdminDashboardPanel();
     }//GEN-LAST:event_AdminLoginActionPerformed
 
@@ -713,171 +718,8 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_SearchTextFieldActionPerformed
 
     private void AddPrisonerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddPrisonerButtonActionPerformed
-        // Create form fields
-        JTextField nameField = new JTextField(20);
-        JSpinner ageSpinner = new JSpinner(new SpinnerNumberModel(25, 18, 120, 1));
-        JComboBox<String> genderCombo = new JComboBox<>(new String[]{"Male", "Female", "Other"});
-        JTextField addressField = new JTextField(20);
-        JTextField crimeTypeField = new JTextField(20);
-        JTextArea crimeDescArea = new JTextArea(3, 20);
-        crimeDescArea.setLineWrap(true);
-        crimeDescArea.setWrapStyleWord(true);
-        JScrollPane crimeDescScroll = new JScrollPane(crimeDescArea);
-        
-        // Date picker for admission date
-        SpinnerDateModel dateModel = new SpinnerDateModel();
-        JSpinner admissionDateSpinner = new JSpinner(dateModel);
-        JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(admissionDateSpinner, "yyyy-MM-dd");
-        admissionDateSpinner.setEditor(dateEditor);
-        admissionDateSpinner.setValue(new java.util.Date()); // Set to today
-        
-        JSpinner sentenceSpinner = new JSpinner(new SpinnerNumberModel(12, 1, 600, 1));
-        JTextField locationField = new JTextField(20);
-        
-        // Status dropdown with all options
-        JComboBox<String> statusCombo = new JComboBox<>(new String[]{
-            "Active", "Released", "Transferred", "Medical", "Solitary", "Parole"
-        });
-        
-        // Auto-generate prisoner ID and family code
-        int nextId = controller.getNextAvailableId();
-        String familyCode = "FAM" + nextId;
-        JTextField familyCodeField = new JTextField(familyCode);
-        familyCodeField.setEditable(true); // Allow editing if needed
-        
-        // Create panel with better layout
-        JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        
-        int row = 0;
-        
-        // Name
-        gbc.gridx = 0; gbc.gridy = row;
-        panel.add(new JLabel("Name:*"), gbc);
-        gbc.gridx = 1;
-        panel.add(nameField, gbc);
-        
-        // Age
-        row++;
-        gbc.gridx = 0; gbc.gridy = row;
-        panel.add(new JLabel("Age:*"), gbc);
-        gbc.gridx = 1;
-        panel.add(ageSpinner, gbc);
-        
-        // Gender
-        row++;
-        gbc.gridx = 0; gbc.gridy = row;
-        panel.add(new JLabel("Gender:*"), gbc);
-        gbc.gridx = 1;
-        panel.add(genderCombo, gbc);
-        
-        // Address
-        row++;
-        gbc.gridx = 0; gbc.gridy = row;
-        panel.add(new JLabel("Address:"), gbc);
-        gbc.gridx = 1;
-        panel.add(addressField, gbc);
-        
-        // Crime Type
-        row++;
-        gbc.gridx = 0; gbc.gridy = row;
-        panel.add(new JLabel("Crime Type:*"), gbc);
-        gbc.gridx = 1;
-        panel.add(crimeTypeField, gbc);
-        
-        // Crime Description
-        row++;
-        gbc.gridx = 0; gbc.gridy = row;
-        gbc.anchor = GridBagConstraints.NORTHWEST;
-        panel.add(new JLabel("Crime Description:"), gbc);
-        gbc.gridx = 1;
-        gbc.fill = GridBagConstraints.BOTH;
-        panel.add(crimeDescScroll, gbc);
-        
-        // Admission Date
-        row++;
-        gbc.gridx = 0; gbc.gridy = row;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(new JLabel("Admission Date:*"), gbc);
-        gbc.gridx = 1;
-        panel.add(admissionDateSpinner, gbc);
-        
-        // Sentence Duration
-        row++;
-        gbc.gridx = 0; gbc.gridy = row;
-        panel.add(new JLabel("Sentence (months):*"), gbc);
-        gbc.gridx = 1;
-        panel.add(sentenceSpinner, gbc);
-        
-        // Prison Location
-        row++;
-        gbc.gridx = 0; gbc.gridy = row;
-        panel.add(new JLabel("Prison Location:*"), gbc);
-        gbc.gridx = 1;
-        panel.add(locationField, gbc);
-        
-        // Status
-        row++;
-        gbc.gridx = 0; gbc.gridy = row;
-        panel.add(new JLabel("Status:*"), gbc);
-        gbc.gridx = 1;
-        panel.add(statusCombo, gbc);
-        
-        // Family Code
-        row++;
-        gbc.gridx = 0; gbc.gridy = row;
-        panel.add(new JLabel("Family Code:"), gbc);
-        gbc.gridx = 1;
-        panel.add(familyCodeField, gbc);
-        
-        // Show dialog
-        int result = JOptionPane.showConfirmDialog(this, panel, 
-                "Add New Prisoner - ID: " + nextId, 
-                JOptionPane.OK_CANCEL_OPTION, 
-                JOptionPane.PLAIN_MESSAGE);
-        
-        if (result == JOptionPane.OK_OPTION) {
-            try {
-                // Get admission date from spinner
-                java.util.Date utilDate = (java.util.Date) admissionDateSpinner.getValue();
-                LocalDate admissionDate = utilDate.toInstant()
-                    .atZone(java.time.ZoneId.systemDefault())
-                    .toLocalDate();
-                
-                boolean success = controller.addPrisoner(
-                    nameField.getText(),
-                    (int) ageSpinner.getValue(),
-                    (String) genderCombo.getSelectedItem(),
-                    addressField.getText(),
-                    crimeTypeField.getText(),
-                    crimeDescArea.getText(),
-                    admissionDate,
-                    (int) sentenceSpinner.getValue(),
-                    locationField.getText(),
-                    familyCodeField.getText(),
-                    (String) statusCombo.getSelectedItem()
-                );
-                
-                if (success) {
-                    // Refresh table
-                    controller.loadPrisonerToTable(PrisonerRecordTable);
-                    JOptionPane.showMessageDialog(this, 
-                        "Prisoner added successfully!\nPrisoner ID: " + nextId + "\nFamily Code: " + familyCodeField.getText(), 
-                        "Success", 
-                        JOptionPane.INFORMATION_MESSAGE);
-                }
-                
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, 
-                    "Error: " + ex.getMessage(), 
-                    "Error", 
-                    JOptionPane.ERROR_MESSAGE);
-            }
-        }
+        // Use PrisonerDialogHelper for Add dialog
+        PrisonerDialogHelper.showAddDialog(controller, this, PrisonerRecordTable);
     }//GEN-LAST:event_AddPrisonerButtonActionPerformed
 
     private void SearchTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchTypeComboBoxActionPerformed
