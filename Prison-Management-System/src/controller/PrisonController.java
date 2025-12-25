@@ -17,130 +17,47 @@ public class PrisonController {
     private Queue<PrisonerModel> recentlyAddedQueue = new LinkedList<>();
     private int nextPrisonerId = 106; // Start after your sample data
     
-    // Maximum number of recent activities to show
-    private static final int MAX_RECENT = 5;
-    
     /**
      * Add a new prisoner (CREATE operation)
-     * Validates input and updates recently added queue
+     * Delegates to CRUD.addPrisoner
      */
     public boolean addPrisoner(String name, int age, String gender, String address,
                               String crimeType, String crimeDescription,
                               LocalDate admissionDate, int sentenceDuration,
                               String prisonLocation, String familyCode, String status) {
-        try {
-            // Validation
-            if (name == null || name.trim().isEmpty()) {
-                throw new IllegalArgumentException("Prisoner name cannot be empty");
-            }
-            if (age <= 0 || age > 120) {
-                throw new IllegalArgumentException("Age must be between 1 and 120");
-            }
-            if (sentenceDuration <= 0) {
-                throw new IllegalArgumentException("Sentence duration must be positive");
-            }
-            if (admissionDate.isAfter(LocalDate.now())) {
-                throw new IllegalArgumentException("Admission date cannot be in future");
-            }
-            
-            // Check for duplicate names (case-insensitive)
-            for (PrisonerModel p : prisonDetails) {
-                if (p.getName().equalsIgnoreCase(name.trim())) {
-                    throw new IllegalArgumentException("Prisoner with this name already exists");
-                }
-            }
-            
-            // Generate unique ID
-            int prisonerId = getNextAvailableId();
-            
-            // Create new prisoner with manual status
-            PrisonerModel newPrisoner = new PrisonerModel(prisonerId, 
-                name.trim(), age, gender, address.trim(), crimeType, 
-                crimeDescription, admissionDate, sentenceDuration,
-                prisonLocation, familyCode, status);
-            
-            // Add to main list
-            prisonDetails.add(newPrisoner);
-            
-            // Update recently added queue (maintain max 5)
-            if (recentlyAddedQueue.size() >= MAX_RECENT) {
-                recentlyAddedQueue.poll(); // Remove oldest
-            }
-            recentlyAddedQueue.offer(newPrisoner); // Add newest
-            
-            // Update next ID
-            nextPrisonerId = prisonerId + 1;
-            
-            // Log to console
-            System.out.println("Added prisoner: " + name + " (ID: " + prisonerId + ")");
-            
-            return true;
-            
-        } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(null, 
-                "Validation Error: " + e.getMessage(), 
-                "Input Error", 
-                JOptionPane.ERROR_MESSAGE);
-            throw e;
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, 
-                "Error adding prisoner: " + e.getMessage(), 
-                "System Error", 
-                JOptionPane.ERROR_MESSAGE);
-            return false;
+        Object[] result = CRUD.addPrisoner(prisonDetails, recentlyAddedQueue, nextPrisonerId,
+                                           name, age, gender, address, crimeType, crimeDescription,
+                                           admissionDate, sentenceDuration, prisonLocation, familyCode, status);
+        
+        boolean success = (Boolean) result[0];
+        if (success) {
+            nextPrisonerId = (Integer) result[1]; // Update next ID
         }
+        return success;
     }
     
     /**
      * Get next available prisoner ID (public for UI preview)
+     * Delegates to CRUD.getNextAvailableId
      */
     public int getNextAvailableId() {
-        // Find max ID in current list
-        int maxId = 0;
-        for (PrisonerModel p : prisonDetails) {
-            if (p.getPrisonerId() > maxId) {
-                maxId = p.getPrisonerId();
-            }
-        }
-        // Return next available ID
-        return Math.max(maxId + 1, nextPrisonerId);
+        return CRUD.getNextAvailableId(prisonDetails, nextPrisonerId);
     }
     
     /**
      * Get recent activities for display
+     * Delegates to CRUD.getRecentActivities
      */
     public String getRecentActivities() {
-        StringBuilder activities = new StringBuilder("<html><b>Recent Activities:</b><br>");
-        
-        if (recentlyAddedQueue.isEmpty()) {
-            activities.append("No recent activities<br>");
-        } else {
-            for (PrisonerModel p : recentlyAddedQueue) {
-                activities.append("• Added: ").append(p.getName())
-                         .append(" (ID: ").append(p.getPrisonerId()).append(")<br>");
-            }
-        }
-        
-        // Add some sample activities if queue is empty
-        if (recentlyAddedQueue.isEmpty()) {
-            activities.append("• Login: Admin logged in<br>");
-            activities.append("• View: Prisoner records loaded<br>");
-        }
-        
-        activities.append("</html>");
-        return activities.toString();
+        return CRUD.getRecentActivities(recentlyAddedQueue);
     }
     
     /**
      * Get prisoner by ID
+     * Delegates to CRUD.getPrisonerById
      */
     public PrisonerModel getPrisonerById(int id) {
-        for (PrisonerModel p : prisonDetails) {
-            if (p.getPrisonerId() == id) {
-                return p;
-            }
-        }
-        return null;
+        return CRUD.getPrisonerById(prisonDetails, id);
     }
     
     /**
@@ -152,123 +69,25 @@ public class PrisonController {
     
     /**
      * UPDATE - Update existing prisoner information
+     * Delegates to CRUD.updatePrisoner
      * @return true if update successful, false otherwise
      */
     public boolean updatePrisoner(int prisonerId, String name, int age, String gender,
                                   String address, String crimeType, String crimeDescription,
                                   LocalDate admissionDate, int sentenceDuration,
                                   String prisonLocation, String familyCode) {
-        try {
-            // Find prisoner
-            PrisonerModel prisoner = getPrisonerById(prisonerId);
-            if (prisoner == null) {
-                throw new IllegalArgumentException("Prisoner with ID " + prisonerId + " not found");
-            }
-            
-            // Validation
-            if (name == null || name.trim().isEmpty()) {
-                throw new IllegalArgumentException("Prisoner name cannot be empty");
-            }
-            if (age <= 0 || age > 120) {
-                throw new IllegalArgumentException("Age must be between 1 and 120");
-            }
-            if (sentenceDuration <= 0) {
-                throw new IllegalArgumentException("Sentence duration must be positive");
-            }
-            if (admissionDate.isAfter(LocalDate.now())) {
-                throw new IllegalArgumentException("Admission date cannot be in future");
-            }
-            
-            // Check for duplicate names (excluding current prisoner)
-            for (PrisonerModel p : prisonDetails) {
-                if (p.getPrisonerId() != prisonerId && 
-                    p.getName().equalsIgnoreCase(name.trim())) {
-                    throw new IllegalArgumentException("Another prisoner with this name already exists");
-                }
-            }
-            
-            // Update prisoner details
-            prisoner.setName(name.trim());
-            prisoner.setAge(age);
-            prisoner.setGender(gender);
-            prisoner.setAddress(address.trim());
-            prisoner.setCrimeType(crimeType);
-            prisoner.setCrimeDescription(crimeDescription);
-            prisoner.setAdmissionDate(admissionDate);
-            prisoner.setSentenceDuration(sentenceDuration);
-            prisoner.setPrisonLocation(prisonLocation);
-            prisoner.setFamilyCode(familyCode);
-            
-            System.out.println("Updated prisoner: " + name + " (ID: " + prisonerId + ")");
-            return true;
-            
-        } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(null, 
-                "Update Error: " + e.getMessage(), 
-                "Input Error", 
-                JOptionPane.ERROR_MESSAGE);
-            throw e;
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, 
-                "Error updating prisoner: " + e.getMessage(), 
-                "System Error", 
-                JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
+        return CRUD.updatePrisoner(prisonDetails, prisonerId, name, age, gender,
+                                   address, crimeType, crimeDescription, admissionDate,
+                                   sentenceDuration, prisonLocation, familyCode);
     }
     
     /**
      * DELETE - Remove prisoner from system
+     * Delegates to CRUD.deletePrisoner
      * @return true if deletion successful, false otherwise
      */
     public boolean deletePrisoner(int prisonerId) {
-        try {
-            PrisonerModel prisoner = getPrisonerById(prisonerId);
-            if (prisoner == null) {
-                throw new IllegalArgumentException("Prisoner with ID " + prisonerId + " not found");
-            }
-            
-            // Confirm deletion
-            int confirm = JOptionPane.showConfirmDialog(null,
-                "Are you sure you want to delete prisoner:\n" +
-                "ID: " + prisoner.getPrisonerId() + "\n" +
-                "Name: " + prisoner.getName() + "\n" +
-                "Crime: " + prisoner.getCrimeType() + "\n\n" +
-                "This action cannot be undone!",
-                "Confirm Deletion",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.WARNING_MESSAGE);
-            
-            if (confirm != JOptionPane.YES_OPTION) {
-                return false;
-            }
-            
-            // Remove from list
-            boolean removed = prisonDetails.remove(prisoner);
-            
-            if (removed) {
-                System.out.println("Deleted prisoner: " + prisoner.getName() + " (ID: " + prisonerId + ")");
-                JOptionPane.showMessageDialog(null,
-                    "Prisoner deleted successfully!",
-                    "Success",
-                    JOptionPane.INFORMATION_MESSAGE);
-            }
-            
-            return removed;
-            
-        } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(null, 
-                "Delete Error: " + e.getMessage(), 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
-            return false;
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, 
-                "Error deleting prisoner: " + e.getMessage(), 
-                "System Error", 
-                JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
+        return CRUD.deletePrisoner(prisonDetails, prisonerId);
     }
     
     /**
