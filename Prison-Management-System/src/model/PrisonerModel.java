@@ -22,7 +22,7 @@ public class PrisonerModel {
     private String healthStatus;
     private String familyCode; // For family portal access
 
-    // Constructor
+    // Constructor (auto-calculate status)
     public PrisonerModel(int prisonerId, String name, int age, String gender,
                    String address, String crimeType, String crimeDescription,
                    LocalDate admissionDate, int sentenceDuration,
@@ -40,6 +40,27 @@ public class PrisonerModel {
         this.prisonLocation = prisonLocation;
         this.familyCode = familyCode;
         this.status = "Active";
+        this.healthStatus = "Good";
+    }
+    
+    // Constructor (with manual status)
+    public PrisonerModel(int prisonerId, String name, int age, String gender,
+                   String address, String crimeType, String crimeDescription,
+                   LocalDate admissionDate, int sentenceDuration,
+                   String prisonLocation, String familyCode, String status) {
+        this.prisonerId = prisonerId;
+        this.name = name;
+        this.age = age;
+        this.gender = gender;
+        this.address = address;
+        this.crimeType = crimeType;
+        this.crimeDescription = crimeDescription;
+        this.admissionDate = admissionDate;
+        this.sentenceDuration = sentenceDuration;
+        this.releaseDate = admissionDate.plusMonths(sentenceDuration);
+        this.prisonLocation = prisonLocation;
+        this.familyCode = familyCode;
+        this.status = status;  // Use provided status
         this.healthStatus = "Good";
     }
 
