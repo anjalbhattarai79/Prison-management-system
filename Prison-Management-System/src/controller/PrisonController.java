@@ -277,86 +277,14 @@ public class PrisonController {
      * @param searchTerm: search keyword
      * @return filtered list of prisoners
      */
+    /**
+     * Search for prisoners - delegates to SearchOperation
+     * @param searchType - Type from ComboBox
+     * @param searchTerm - The search query
+     * @return LinkedList of matching prisoners
+     */
     public LinkedList<PrisonerModel> searchPrisoners(String searchType, String searchTerm) {
-        LinkedList<PrisonerModel> results = new LinkedList<>();
-        
-        if (searchTerm == null || searchTerm.trim().isEmpty()) {
-            return new LinkedList<>(prisonDetails); // Return all if search term empty
-        }
-        
-        String term = searchTerm.trim().toLowerCase();
-        
-        try {
-            switch (searchType) {
-                case "ID":
-                    int searchId = Integer.parseInt(searchTerm.trim());
-                    for (PrisonerModel p : prisonDetails) {
-                        if (p.getPrisonerId() == searchId) {
-                            results.add(p);
-                        }
-                    }
-                    break;
-                    
-                case "Name":
-                    for (PrisonerModel p : prisonDetails) {
-                        if (p.getName().toLowerCase().contains(term)) {
-                            results.add(p);
-                        }
-                    }
-                    break;
-                    
-                case "Crime Type":
-                    for (PrisonerModel p : prisonDetails) {
-                        if (p.getCrimeType().toLowerCase().contains(term)) {
-                            results.add(p);
-                        }
-                    }
-                    break;
-                    
-                case "Location":
-                    for (PrisonerModel p : prisonDetails) {
-                        if (p.getPrisonLocation().toLowerCase().contains(term)) {
-                            results.add(p);
-                        }
-                    }
-                    break;
-                    
-                case "Status":
-                    for (PrisonerModel p : prisonDetails) {
-                        if (p.getStatus().toLowerCase().contains(term)) {
-                            results.add(p);
-                        }
-                    }
-                    break;
-                    
-                default:
-                    // Search all fields
-                    for (PrisonerModel p : prisonDetails) {
-                        if (String.valueOf(p.getPrisonerId()).contains(term) ||
-                            p.getName().toLowerCase().contains(term) ||
-                            p.getCrimeType().toLowerCase().contains(term) ||
-                            p.getPrisonLocation().toLowerCase().contains(term) ||
-                            p.getStatus().toLowerCase().contains(term)) {
-                            results.add(p);
-                        }
-                    }
-            }
-            
-            System.out.println("Search [" + searchType + ": " + searchTerm + "] found " + results.size() + " results");
-            
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null,
-                "Invalid ID format. Please enter a numeric value.",
-                "Search Error",
-                JOptionPane.ERROR_MESSAGE);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null,
-                "Error during search: " + e.getMessage(),
-                "Search Error",
-                JOptionPane.ERROR_MESSAGE);
-        }
-        
-        return results;
+        return SearchOperation.searchPrisoners(prisonDetails, searchType, searchTerm);
     }
     
     /**

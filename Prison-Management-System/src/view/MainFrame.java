@@ -79,7 +79,45 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         
-   
+        // Setup Search button
+        SearchButton.addActionListener(evt -> {
+            String searchType = (String) SearchTypeComboBox.getSelectedItem();
+            String searchTerm = SearchTextField.getText().trim();
+            
+            if (searchTerm.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                    "Please enter a search term",
+                    "Search Error",
+                    JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            // Call controller's search method
+            LinkedList<PrisonerModel> results = controller.searchPrisoners(searchType, searchTerm);
+            
+            // Display results
+            if (!results.isEmpty()) {
+                controller.loadPrisonerListToTable(PrisonerRecordTable, results);
+                PrisonerDialogHelper.setupTableButtons(PrisonerRecordTable, controller, this);
+                
+                JOptionPane.showMessageDialog(this,
+                    "Search complete!\nFound " + results.size() + " result(s)\n\n" +
+                    "Check console output to see the search algorithm in action.",
+                    "Search Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        
+        // Setup Refresh button
+        RefreshButton.addActionListener(evt -> {
+            controller.loadPrisonerToTable(PrisonerRecordTable);
+            PrisonerDialogHelper.setupTableButtons(PrisonerRecordTable, controller, this);
+            SearchTextField.setText(""); // Clear search field
+            JOptionPane.showMessageDialog(this,
+                "Table refreshed!\nShowing all " + controller.getPrisonerCount() + " prisoners",
+                "Refresh Complete",
+                JOptionPane.INFORMATION_MESSAGE);
+        });
         
         
     }     
@@ -263,7 +301,7 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(AdminLoginBodyPanelLayout.createSequentialGroup()
                 .addGap(153, 153, 153)
                 .addComponent(AdminCredentialEntryPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(384, Short.MAX_VALUE))
+                .addContainerGap(546, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout AdminLoginPanelLayout = new javax.swing.GroupLayout(AdminLoginPanel);
@@ -401,26 +439,28 @@ public class MainFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(SortTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(SortBasisComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(SortButton))
+                        .addComponent(SortBasisComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(OperationalPanelLayout.createSequentialGroup()
                         .addComponent(SearchLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(SearchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(SearchTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(SearchButton)))
-                .addGap(160, 160, 160)
-                .addGroup(OperationalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(VisitRequestsButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(AddPrisonerButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(SearchTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(46, 46, 46)
+                .addGroup(OperationalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(SearchButton, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
+                    .addComponent(SortButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
                 .addGroup(OperationalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(RefreshButton, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(TrashBinButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(20, 266, Short.MAX_VALUE))
+                    .addGroup(OperationalPanelLayout.createSequentialGroup()
+                        .addComponent(RefreshButton, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(AddPrisonerButton))
+                    .addGroup(OperationalPanelLayout.createSequentialGroup()
+                        .addComponent(VisitRequestsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(TrashBinButton, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         OperationalPanelLayout.setVerticalGroup(
             OperationalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -431,22 +471,17 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(SearchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(SearchTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(SearchButton)
-                    .addComponent(AddPrisonerButton)
-                    .addComponent(RefreshButton))
-                .addGroup(OperationalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(OperationalPanelLayout.createSequentialGroup()
-                        .addGap(25, 25, 25)
-                        .addGroup(OperationalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(SortByLabel)
-                            .addComponent(SortByComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(SortTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(SortBasisComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(SortButton)))
-                    .addGroup(OperationalPanelLayout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addGroup(OperationalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(VisitRequestsButton)
-                            .addComponent(TrashBinButton))))
+                    .addComponent(RefreshButton)
+                    .addComponent(AddPrisonerButton))
+                .addGap(25, 25, 25)
+                .addGroup(OperationalPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(SortByLabel)
+                    .addComponent(SortByComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(SortTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(SortBasisComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(SortButton)
+                    .addComponent(VisitRequestsButton)
+                    .addComponent(TrashBinButton))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
@@ -490,7 +525,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(PrisonerRecordPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(PrisonerRecordLabel)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1067, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(72, Short.MAX_VALUE))
+                .addContainerGap(929, Short.MAX_VALUE))
         );
         PrisonerRecordPanelLayout.setVerticalGroup(
             PrisonerRecordPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -541,7 +576,7 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(RecentActivityPanelLayout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addComponent(ActivityLabel)
-                .addContainerGap(843, Short.MAX_VALUE))
+                .addContainerGap(768, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout AdminDashboardPanelLayout = new javax.swing.GroupLayout(AdminDashboardPanel);
@@ -565,11 +600,11 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(AdminDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(AdminDashboardPanelLayout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addComponent(AdminDashboardBodyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(AdminDashboardBodyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 811, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, AdminDashboardPanelLayout.createSequentialGroup()
                         .addGap(30, 30, 30)
                         .addComponent(RecentActivityPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(252, Short.MAX_VALUE))
         );
 
         mainPanel.add(AdminDashboardPanel, "card2");
@@ -641,7 +676,7 @@ public class MainFrame extends javax.swing.JFrame {
         HomeBodyLayout.setVerticalGroup(
             HomeBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(HomeBodyLayout.createSequentialGroup()
-                .addContainerGap(357, Short.MAX_VALUE)
+                .addContainerGap(519, Short.MAX_VALUE)
                 .addComponent(AdminLoginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(46, 46, 46)
                 .addComponent(FamilyLoginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -682,8 +717,7 @@ public class MainFrame extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -727,10 +761,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_AddPrisonerButtonActionPerformed
 
     private void SearchTypeComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchTypeComboBoxActionPerformed
-        JOptionPane.showMessageDialog(this,
-            "Visit Requests feature coming soon!",
-            "Feature Not Available",
-            JOptionPane.INFORMATION_MESSAGE);
+        // No action needed - just for display/selection
     }//GEN-LAST:event_SearchTypeComboBoxActionPerformed
 
     private void VisitRequestsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_VisitRequestsButtonActionPerformed
