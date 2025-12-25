@@ -291,6 +291,23 @@ public class PrisonerDialogHelper {
      * Setup table action buttons (public static so MainFrame can call it)
      */
     public static void setupTableButtons(JTable table, PrisonController controller, JFrame parent) {
+        // Set row height for better button visibility
+        table.setRowHeight(32);  // Increased from default ~16px to 32px
+        
+        // Set column widths for better UX
+        table.getColumnModel().getColumn(0).setPreferredWidth(50);   // ID
+        table.getColumnModel().getColumn(1).setPreferredWidth(120);  // Name
+        table.getColumnModel().getColumn(2).setPreferredWidth(50);   // Age
+        table.getColumnModel().getColumn(3).setPreferredWidth(70);   // Gender
+        table.getColumnModel().getColumn(4).setPreferredWidth(100);  // Admission Date
+        table.getColumnModel().getColumn(5).setPreferredWidth(110);  // Crime Type
+        table.getColumnModel().getColumn(6).setPreferredWidth(100);  // Release Date
+        table.getColumnModel().getColumn(7).setPreferredWidth(80);   // Sentence
+        table.getColumnModel().getColumn(8).setPreferredWidth(100);  // Location
+        table.getColumnModel().getColumn(9).setPreferredWidth(90);   // Status
+        table.getColumnModel().getColumn(10).setPreferredWidth(160); // Actions
+        
+        // Setup button renderer and editor
         table.getColumnModel().getColumn(10).setCellRenderer(new TableButtonRenderer());
         table.getColumnModel().getColumn(10).setCellEditor(
             new TableButtonEditor(new JCheckBox(), table, controller, parent));

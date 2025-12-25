@@ -287,18 +287,17 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="AdminDashboardHeaderPanel" min="-2" max="-2" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Component id="AdminDashboardBodyPanel" min="-2" pref="1184" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="RecentActivityPanel" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              <Component id="RecentActivityPanel" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="AdminDashboardHeaderPanel" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace pref="25" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -306,12 +305,17 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="AdminDashboardHeaderPanel" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="AdminDashboardBodyPanel" min="-2" max="-2" attributes="0"/>
-                          <Component id="RecentActivityPanel" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <Component id="AdminDashboardBodyPanel" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
+                              <Component id="RecentActivityPanel" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace pref="15" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -330,7 +334,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
                           <Component id="DashboardTItleLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace pref="1211" max="32767" attributes="0"/>
                           <Component id="AdminLogOutButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
                       </Group>
@@ -433,7 +437,6 @@
                                       <Component id="SortBasisComboBox" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
                                       <Component id="SortButton" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                   </Group>
                                   <Group type="102" attributes="0">
                                       <Component id="SearchLabel" min="-2" pref="46" max="-2" attributes="0"/>
@@ -441,24 +444,21 @@
                                       <Component id="SearchTextField" min="-2" pref="140" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                                       <Component id="SearchTypeComboBox" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="32767" attributes="0"/>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
                                       <Component id="SearchButton" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                              <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Group type="102" alignment="1" attributes="0">
-                                      <Component id="AddPrisonerButton" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="VisitRequestsButton" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="1" attributes="0">
-                                      <Component id="RefreshButton" min="-2" pref="108" max="-2" attributes="0"/>
-                                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                                      <Component id="TrashBinButton" min="-2" max="-2" attributes="0"/>
-                                  </Group>
+                              <EmptySpace min="-2" pref="160" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                  <Component id="VisitRequestsButton" max="32767" attributes="0"/>
+                                  <Component id="AddPrisonerButton" max="32767" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="RefreshButton" alignment="0" min="-2" pref="108" max="-2" attributes="0"/>
+                                  <Component id="TrashBinButton" max="32767" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="20" pref="266" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -471,18 +471,27 @@
                                   <Component id="SearchTextField" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="SearchTypeComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="SearchButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="VisitRequestsButton" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="AddPrisonerButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="SortByLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="SortByComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="SortTypeComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="SortBasisComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="SortButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="TrashBinButton" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="RefreshButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="3" attributes="0">
+                                          <Component id="SortByLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="SortByComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="SortTypeComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="SortBasisComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="SortButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="3" attributes="0">
+                                          <Component id="VisitRequestsButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                          <Component id="TrashBinButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
                               </Group>
                               <EmptySpace pref="20" max="32767" attributes="0"/>
                           </Group>
@@ -666,8 +675,8 @@
                               <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                               <Component id="PrisonerRecordLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="jScrollPane1" pref="674" max="32767" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jScrollPane1" min="-2" pref="312" max="-2" attributes="0"/>
+                              <EmptySpace pref="368" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -785,7 +794,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
                           <Component id="ActivityLabel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="235" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
