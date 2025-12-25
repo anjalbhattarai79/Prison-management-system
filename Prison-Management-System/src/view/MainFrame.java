@@ -119,6 +119,31 @@ public class MainFrame extends javax.swing.JFrame {
                 JOptionPane.INFORMATION_MESSAGE);
         });
         
+        // Setup Sort button
+        SortButton.addActionListener(evt -> {
+            String sortBy = (String) SortByComboBox.getSelectedItem();
+            String sortBasis = (String) SortBasisComboBox.getSelectedItem();
+            
+            if (sortBy == null || sortBasis == null) {
+                JOptionPane.showMessageDialog(this,
+                    "Please select sort options",
+                    "Sort Error",
+                    JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            
+            boolean ascending = "Ascending".equals(sortBasis);
+            
+            // Call controller's sort method (which delegates to SortOperation)
+            LinkedList<PrisonerModel> sortedList = controller.sortPrisoners(sortBy, ascending);
+            
+            // Display sorted results
+            controller.loadPrisonerListToTable(PrisonerRecordTable, sortedList);
+            PrisonerDialogHelper.setupTableButtons(PrisonerRecordTable, controller, this);
+            
+            System.out.println("\nTable updated with sorted results. Check console above for sorting algorithm details.");
+        });
+        
         
     }     
      

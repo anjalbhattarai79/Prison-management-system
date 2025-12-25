@@ -294,63 +294,7 @@ public class PrisonController {
      * @return sorted list of prisoners
      */
     public LinkedList<PrisonerModel> sortPrisoners(String sortBy, boolean ascending) {
-        LinkedList<PrisonerModel> sorted = new LinkedList<>(prisonDetails);
-        
-        try {
-            switch (sortBy) {
-                case "Name":
-                    sorted.sort((p1, p2) -> {
-                        int cmp = p1.getName().compareToIgnoreCase(p2.getName());
-                        return ascending ? cmp : -cmp;
-                    });
-                    break;
-                    
-                case "Age":
-                    sorted.sort((p1, p2) -> {
-                        int cmp = Integer.compare(p1.getAge(), p2.getAge());
-                        return ascending ? cmp : -cmp;
-                    });
-                    break;
-                    
-                case "ID":
-                    sorted.sort((p1, p2) -> {
-                        int cmp = Integer.compare(p1.getPrisonerId(), p2.getPrisonerId());
-                        return ascending ? cmp : -cmp;
-                    });
-                    break;
-                    
-                case "Admission Date":
-                    sorted.sort((p1, p2) -> {
-                        int cmp = p1.getAdmissionDate().compareTo(p2.getAdmissionDate());
-                        return ascending ? cmp : -cmp;
-                    });
-                    break;
-                    
-                case "Release Date":
-                    sorted.sort((p1, p2) -> {
-                        int cmp = p1.getReleaseDate().compareTo(p2.getReleaseDate());
-                        return ascending ? cmp : -cmp;
-                    });
-                    break;
-                    
-                default:
-                    // Default sort by ID
-                    sorted.sort((p1, p2) -> {
-                        int cmp = Integer.compare(p1.getPrisonerId(), p2.getPrisonerId());
-                        return ascending ? cmp : -cmp;
-                    });
-            }
-            
-            System.out.println("Sorted by " + sortBy + " (" + (ascending ? "Ascending" : "Descending") + ")");
-            
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null,
-                "Error during sorting: " + e.getMessage(),
-                "Sort Error",
-                JOptionPane.ERROR_MESSAGE);
-        }
-        
-        return sorted;
+        return SortOperation.sortPrisoners(prisonDetails, sortBy, ascending);
     }
     
     /**
