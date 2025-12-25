@@ -4,20 +4,106 @@
  */
 package view;
 
+import java.awt.Color;
+import java.awt.Cursor;
+import java.time.LocalDate;
+import java.util.LinkedList;
+import javax.swing.table.DefaultTableModel;
+import model.PrisonerModel;
+
 /**
- *
+ * MainFrame - Main Application Window
+ * Professional Blue/Gray Theme for Government System
  * @author Anjal Bhattarai
  */
 public class MainFrame extends javax.swing.JFrame {
     
+    LinkedList<PrisonerModel> prisonerDetails = new LinkedList<>();
+
+    public void prepareInitialData() {
+        
+        int prisonerId, String name, int age, String gender,
+                   String address, String crimeType, String crimeDescription,
+                   LocalDate admissionDate, int sentenceDuration,
+                   String prisonLocation, String familyCode
+        
+
+        prisonerDetails.add(new PrisonerModel(101, "John Doe", 35, "Male",
+                "123 Main St", "Robbery", "Bank robbery with weapons",
+                LocalDate.of(2023, 5, 15), 60, "Central Prison", "FAM12345"););
+        prisonerDetails.add(new PrisonerModel(24046563, "Joy Roy", "Computing", "+977-9808579281", 21));
+        prisonerDetails.add(new PrisonerModel(24046563, "Joy Roy", "Computing", "+977-9808579281", 22));
+        prisonerDetails.add(new PrisonerModel(24046563, "Joy Roy", "Computing", "+977-9808579281", 25));
+        prisonerDetails.add(new PrisonerModel(24046563, "Joy Roy", "Computing", "+977-9808579281", 19));
+    }
+
+    public void loadStudentListToTable() {
+
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0); // clear previous rows
+
+        for (StudentModel student : studentDetails) {
+            Object[] row = {
+                student.getLmuId(),
+                student.getFullName(),
+                student.getProgram(),
+                student.getContact(),
+                student.getAge()
+            };
+            model.addRow(row);
+        }
+
+    }
+    
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MainFrame.class.getName());
+    
+    // Panel names as constants
+    public static final String HOME_PANEL = "HOME";
+    public static final String ADMIN_LOGIN_PANEL = "ADMIN_LOGIN";
+    public static final String ADMIN_DASHBOARD_PANEL = "ADMIN_DASHBOARD";
+    public static final String FAMILY_LOGIN_PANEL = "FAMILY_LOGIN";
+    public static final String FAMILY_DASHBOARD_PANEL = "FAMILY_DASHBOARD";
+    
+    // Color Scheme - Professional Blue/Gray
+    public static final Color PRIMARY_COLOR = new Color(41, 98, 255);      // Royal Blue
+    public static final Color SECONDARY_COLOR = new Color(52, 73, 94);     // Dark Blue-Gray
+    public static final Color ACCENT_COLOR = new Color(46, 213, 115);      // Success Green
+    public static final Color DANGER_COLOR = new Color(255, 71, 87);       // Alert Red
+    public static final Color WARNING_COLOR = new Color(255, 165, 2);      // Warning Orange
+    public static final Color BACKGROUND_COLOR = new Color(236, 240, 241); // Light Gray
+    public static final Color CARD_COLOR = Color.WHITE;
+    public static final Color TEXT_PRIMARY = new Color(44, 62, 80);
+    public static final Color TEXT_SECONDARY = new Color(127, 140, 141);
+
+    // Current prisoner ID for family dashboard
+    private int currentFamilyPrisonerId = 0;
 
     /**
      * Creates new form MainFrame
      */
     public MainFrame() {
         initComponents();
+        setupCustomComponents();
         showHomePanel();
+    }
+    
+    /**
+     * Setup custom components like mouse listeners for labels
+     */
+    private void setupCustomComponents() {
+        // Make BackLabel clickable
+        BackLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        BackLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                BackLabelMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                BackLabel.setText("<html><u><- Back to Home</u></html>");
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                BackLabel.setText("<- Back to Home");
+            }
+        });
     }
 
     /**
@@ -29,11 +115,11 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        mainPanel = new javax.swing.JPanel();
         HomePanel = new javax.swing.JPanel();
         HomeHeader = new javax.swing.JPanel();
         Header = new javax.swing.JLabel();
         Slogan = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
         HomeBody = new javax.swing.JPanel();
         AdminLoginButton = new javax.swing.JButton();
         FamilyLoginButton = new javax.swing.JButton();
@@ -78,6 +164,8 @@ public class MainFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        mainPanel.setLayout(new java.awt.CardLayout());
+
         HomeHeader.setBackground(new java.awt.Color(51, 51, 255));
 
         Header.setForeground(new java.awt.Color(255, 255, 255));
@@ -91,21 +179,21 @@ public class MainFrame extends javax.swing.JFrame {
         HomeHeaderLayout.setHorizontalGroup(
             HomeHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(HomeHeaderLayout.createSequentialGroup()
+                .addContainerGap(470, Short.MAX_VALUE)
                 .addGroup(HomeHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(HomeHeaderLayout.createSequentialGroup()
-                        .addGap(343, 343, 343)
-                        .addComponent(Header, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(HomeHeaderLayout.createSequentialGroup()
-                        .addGap(264, 264, 264)
-                        .addComponent(Slogan)))
-                .addContainerGap(926, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, HomeHeaderLayout.createSequentialGroup()
+                        .addComponent(Header, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(346, 346, 346))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, HomeHeaderLayout.createSequentialGroup()
+                        .addComponent(Slogan)
+                        .addGap(306, 306, 306))))
         );
         HomeHeaderLayout.setVerticalGroup(
             HomeHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(HomeHeaderLayout.createSequentialGroup()
-                .addGap(18, 18, 18)
+                .addGap(30, 30, 30)
                 .addComponent(Header)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(Slogan)
                 .addContainerGap(25, Short.MAX_VALUE))
         );
@@ -135,21 +223,21 @@ public class MainFrame extends javax.swing.JFrame {
         HomeBody.setLayout(HomeBodyLayout);
         HomeBodyLayout.setHorizontalGroup(
             HomeBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(HomeBodyLayout.createSequentialGroup()
-                .addGap(317, 317, 317)
-                .addComponent(AdminLoginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(58, 58, 58)
-                .addComponent(FamilyLoginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, HomeBodyLayout.createSequentialGroup()
+                .addContainerGap(529, Short.MAX_VALUE)
+                .addGroup(HomeBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(AdminLoginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(FamilyLoginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(414, 414, 414))
         );
         HomeBodyLayout.setVerticalGroup(
             HomeBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(HomeBodyLayout.createSequentialGroup()
-                .addContainerGap(324, Short.MAX_VALUE)
-                .addGroup(HomeBodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(AdminLoginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(FamilyLoginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(269, 269, 269))
+                .addContainerGap(248, Short.MAX_VALUE)
+                .addComponent(AdminLoginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(66, 66, 66)
+                .addComponent(FamilyLoginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(124, 124, 124))
         );
 
         javax.swing.GroupLayout HomePanelLayout = new javax.swing.GroupLayout(HomePanel);
@@ -157,21 +245,21 @@ public class MainFrame extends javax.swing.JFrame {
         HomePanelLayout.setHorizontalGroup(
             HomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(HomePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jSeparator1))
-            .addComponent(HomeHeader, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(HomeBody, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(HomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(HomeBody, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(HomeHeader, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         HomePanelLayout.setVerticalGroup(
             HomePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(HomePanelLayout.createSequentialGroup()
                 .addComponent(HomeHeader, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(HomeBody, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(15, 15, 15)
+                .addComponent(HomeBody, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(87, Short.MAX_VALUE))
         );
+
+        mainPanel.add(HomePanel, "card3");
 
         AdminLoginHeaderPanel.setBackground(new java.awt.Color(0, 204, 255));
 
@@ -185,24 +273,24 @@ public class MainFrame extends javax.swing.JFrame {
         AdminLoginHeaderPanel.setLayout(AdminLoginHeaderPanelLayout);
         AdminLoginHeaderPanelLayout.setHorizontalGroup(
             AdminLoginHeaderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, AdminLoginHeaderPanelLayout.createSequentialGroup()
-                .addGap(59, 59, 59)
-                .addComponent(BackLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 835, Short.MAX_VALUE)
-                .addComponent(TitleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(436, 436, 436))
+            .addGroup(AdminLoginHeaderPanelLayout.createSequentialGroup()
+                .addGroup(AdminLoginHeaderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(AdminLoginHeaderPanelLayout.createSequentialGroup()
+                        .addGap(59, 59, 59)
+                        .addComponent(BackLabel))
+                    .addGroup(AdminLoginHeaderPanelLayout.createSequentialGroup()
+                        .addGap(420, 420, 420)
+                        .addComponent(TitleLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         AdminLoginHeaderPanelLayout.setVerticalGroup(
             AdminLoginHeaderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(AdminLoginHeaderPanelLayout.createSequentialGroup()
-                .addGroup(AdminLoginHeaderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(AdminLoginHeaderPanelLayout.createSequentialGroup()
-                        .addGap(36, 36, 36)
-                        .addComponent(TitleLabel))
-                    .addGroup(AdminLoginHeaderPanelLayout.createSequentialGroup()
-                        .addGap(48, 48, 48)
-                        .addComponent(BackLabel)))
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addGap(20, 20, 20)
+                .addComponent(TitleLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(BackLabel)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         AdminLoginBodyPanel.setBackground(new java.awt.Color(204, 255, 255));
@@ -289,33 +377,38 @@ public class MainFrame extends javax.swing.JFrame {
         AdminLoginBodyPanelLayout.setHorizontalGroup(
             AdminLoginBodyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(AdminLoginBodyPanelLayout.createSequentialGroup()
-                .addGap(262, 262, 262)
+                .addGap(307, 307, 307)
                 .addComponent(AdminCredentialEntryPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(360, Short.MAX_VALUE))
         );
         AdminLoginBodyPanelLayout.setVerticalGroup(
             AdminLoginBodyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, AdminLoginBodyPanelLayout.createSequentialGroup()
-                .addContainerGap(31, Short.MAX_VALUE)
+            .addGroup(AdminLoginBodyPanelLayout.createSequentialGroup()
+                .addGap(93, 93, 93)
                 .addComponent(AdminCredentialEntryPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(45, 45, 45))
+                .addContainerGap(145, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout AdminLoginPanelLayout = new javax.swing.GroupLayout(AdminLoginPanel);
         AdminLoginPanel.setLayout(AdminLoginPanelLayout);
         AdminLoginPanelLayout.setHorizontalGroup(
             AdminLoginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(AdminLoginHeaderPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(AdminLoginBodyPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(AdminLoginPanelLayout.createSequentialGroup()
+                .addGroup(AdminLoginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(AdminLoginBodyPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(AdminLoginHeaderPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 84, Short.MAX_VALUE))
         );
         AdminLoginPanelLayout.setVerticalGroup(
             AdminLoginPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(AdminLoginPanelLayout.createSequentialGroup()
                 .addComponent(AdminLoginHeaderPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(AdminLoginBodyPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(AdminLoginBodyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(38, Short.MAX_VALUE))
         );
+
+        mainPanel.add(AdminLoginPanel, "card4");
 
         AdminDashboardHeaderPanel.setBackground(new java.awt.Color(0, 153, 255));
 
@@ -367,7 +460,7 @@ public class MainFrame extends javax.swing.JFrame {
             .addGroup(RecentActivityPanelLayout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addComponent(ActivityLabel)
-                .addContainerGap(69, Short.MAX_VALUE))
+                .addContainerGap(68, Short.MAX_VALUE))
         );
         RecentActivityPanelLayout.setVerticalGroup(
             RecentActivityPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -438,7 +531,7 @@ public class MainFrame extends javax.swing.JFrame {
                         .addComponent(SortBasisComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(SortButton)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(0, 11, Short.MAX_VALUE))
                     .addGroup(OperationalPanelLayout.createSequentialGroup()
                         .addComponent(SearchLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -479,7 +572,7 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(SortButton)
                     .addComponent(TrashBinButton)
                     .addComponent(RefreshButton))
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         PrisonerRecordPanel.setBackground(new java.awt.Color(255, 255, 255));
@@ -529,11 +622,11 @@ public class MainFrame extends javax.swing.JFrame {
         PrisonerRecordPanelLayout.setVerticalGroup(
             PrisonerRecordPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(PrisonerRecordPanelLayout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(PrisonerRecordLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(20, 20, 20))
         );
 
         javax.swing.GroupLayout AdminDashboardBodyPanelLayout = new javax.swing.GroupLayout(AdminDashboardBodyPanel);
@@ -541,60 +634,63 @@ public class MainFrame extends javax.swing.JFrame {
         AdminDashboardBodyPanelLayout.setHorizontalGroup(
             AdminDashboardBodyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, AdminDashboardBodyPanelLayout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addGroup(AdminDashboardBodyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addContainerGap(14, Short.MAX_VALUE)
+                .addGroup(AdminDashboardBodyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(OperationalPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(PrisonerRecordPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
+                .addGap(29, 29, 29)
                 .addComponent(RecentActivityPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         AdminDashboardBodyPanelLayout.setVerticalGroup(
             AdminDashboardBodyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(RecentActivityPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(AdminDashboardBodyPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(OperationalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(PrisonerRecordPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(16, 16, 16)
+                .addGroup(AdminDashboardBodyPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(RecentActivityPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(AdminDashboardBodyPanelLayout.createSequentialGroup()
+                        .addComponent(OperationalPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(PrisonerRecordPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout AdminDashboardPanelLayout = new javax.swing.GroupLayout(AdminDashboardPanel);
         AdminDashboardPanel.setLayout(AdminDashboardPanelLayout);
         AdminDashboardPanelLayout.setHorizontalGroup(
             AdminDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(AdminDashboardHeaderPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(AdminDashboardBodyPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(AdminDashboardPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(AdminDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(AdminDashboardHeaderPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(AdminDashboardBodyPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 89, Short.MAX_VALUE))
         );
         AdminDashboardPanelLayout.setVerticalGroup(
             AdminDashboardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(AdminDashboardPanelLayout.createSequentialGroup()
                 .addComponent(AdminDashboardHeaderPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(AdminDashboardBodyPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(AdminDashboardBodyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        mainPanel.add(AdminDashboardPanel, "card2");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(HomePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(AdminLoginPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(AdminDashboardPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 1004, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(HomePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(AdminLoginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(AdminDashboardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 686, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -605,7 +701,7 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_AdminLoginButtonActionPerformed
 
     private void FamilyLoginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FamilyLoginButtonActionPerformed
-       
+       showFamilyLoginPanel();
     }//GEN-LAST:event_FamilyLoginButtonActionPerformed
 
     private void UsernameTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UsernameTextFieldActionPerformed
@@ -613,11 +709,15 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_UsernameTextFieldActionPerformed
 
     private void AdminLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AdminLoginActionPerformed
-        // TODO add your handling code here:
+        // For now, just navigate to dashboard (authentication will be added later)
+        showAdminDashboardPanel();
     }//GEN-LAST:event_AdminLoginActionPerformed
 
     private void AdminLogOutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AdminLogOutButtonActionPerformed
-        // TODO add your handling code here:
+        // Clear any user data and return to home
+        UsernameTextField.setText("");
+        PasswordField.setText("");
+        showHomePanel();
     }//GEN-LAST:event_AdminLogOutButtonActionPerformed
 
     private void SearchTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchTextFieldActionPerformed
@@ -649,10 +749,20 @@ public class MainFrame extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> new MainFrame().setVisible(true));
     }
 
-    private void showHomePanel() {
+    /**
+     * Handle BackLabel click to return to home
+     */
+    private void BackLabelMouseClicked(java.awt.event.MouseEvent evt) {
+        showHomePanel();
+    }
+    
+    // Panel visibility methods
+    
+    public void showHomePanel() {
         HomePanel.setVisible(true);
         AdminLoginPanel.setVisible(false);
         AdminDashboardPanel.setVisible(false);
+        // Family panels will be added via NetBeans Form Editor
     }
 
     private void showAdminLoginPanel() {
@@ -665,6 +775,24 @@ public class MainFrame extends javax.swing.JFrame {
         HomePanel.setVisible(false);
         AdminLoginPanel.setVisible(false);
         AdminDashboardPanel.setVisible(true);
+    }
+
+    /**
+     * Show family login panel - will be implemented after adding FamilyLoginPanel via Form Editor
+     */
+    private void showFamilyLoginPanel() {
+        // TODO: Hide other panels and show FamilyLoginPanel
+        // FamilyLoginPanel.setVisible(true);
+    }
+
+    /**
+     * Show family dashboard panel with prisoner ID - will be implemented after adding via Form Editor
+     */
+    public void showFamilyDashboardPanel(int prisonerId) {
+        currentFamilyPrisonerId = prisonerId;
+        // TODO: Hide other panels and show FamilyDashboardPanel
+        // FamilyDashboardPanel.setVisible(true);
+        // Update labels with prisoner info
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -713,6 +841,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JTextField UsernameTextField;
     private javax.swing.JButton VisitRequestsButton;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JPanel mainPanel;
     // End of variables declaration//GEN-END:variables
 }
