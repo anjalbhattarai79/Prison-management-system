@@ -192,20 +192,7 @@ public class SortOperation {
                     break;
                     
                 case "Sentence Duration":
-                    keyExtractor = p -> {
-                        try {
-                            // Extract numeric value from sentence (e.g., "5 years" -> 5)
-                            String sentence = p.getSentenceDuration();
-                            if (sentence == null || sentence.isEmpty()) {
-                                return 0;
-                            }
-                            // Split and parse the first number
-                            String[] parts = sentence.trim().split("\\s+");
-                            return Integer.parseInt(parts[0]);
-                        } catch (Exception e) {
-                            return 0;
-                        }
-                    };
+                    keyExtractor = p -> p.getSentenceDuration(); // Already an int (in months)
                     break;
                     
                 default:
