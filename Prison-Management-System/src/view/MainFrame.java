@@ -797,10 +797,47 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_VisitRequestsButtonActionPerformed
 
     private void TrashBinButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TrashBinButtonActionPerformed
-        JOptionPane.showMessageDialog(this,
-            "Undo/Stack functionality will be implemented here!",
-            "Feature Coming Soon",
-            JOptionPane.INFORMATION_MESSAGE);
+        // Show trash bin menu with options
+        String[] options = {"View Trash", "Restore Last Deleted", "Empty Trash", "Cancel"};
+        
+        int choice = JOptionPane.showOptionDialog(this,
+            "Trash Bin (Stack - LIFO)\n" +
+            "Prisoners in trash: " + controller.getTrashSize() + "\n\n" +
+            "What would you like to do?",
+            "Trash Bin Management",
+            JOptionPane.DEFAULT_OPTION,
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            options,
+            options[0]);
+        
+        switch (choice) {
+            case 0: // View Trash
+                String trashContents = controller.getTrashContents();
+                JOptionPane.showMessageDialog(this,
+                    trashContents,
+                    "Trash Bin Contents",
+                    JOptionPane.INFORMATION_MESSAGE);
+                break;
+                
+            case 1: // Restore Last Deleted (Pop from Stack)
+                PrisonerModel restored = controller.restorePrisoner();
+                if (restored != null) {
+                    // Refresh table to show restored prisoner
+                    controller.loadPrisonerToTable(PrisonerRecordTable);
+                    PrisonerDialogHelper.setupTableButtons(PrisonerRecordTable, controller, this);
+                }
+                break;
+                
+            case 2: // Empty Trash
+                controller.emptyTrash();
+                break;
+                
+            case 3: // Cancel
+            default:
+                // Do nothing
+                break;
+        }
     }//GEN-LAST:event_TrashBinButtonActionPerformed
   
     /**

@@ -7,6 +7,7 @@ package controller;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 import javax.swing.JOptionPane;
 import model.PrisonerModel;
 
@@ -266,9 +267,11 @@ public class CRUD {
     }
     
     /**
-     * DELETE - Remove prisoner from system
+     * DELETE - Remove prisoner from system and push to trash bin (Stack)
      */
-    public static boolean deletePrisoner(LinkedList<PrisonerModel> prisonDetails, int prisonerId) {
+    public static boolean deletePrisoner(LinkedList<PrisonerModel> prisonDetails, 
+                                         Stack<PrisonerModel> trashBin, 
+                                         int prisonerId) {
         try {
             System.out.println("\n╔════════════════════════════════════════════════════════════╗");
             System.out.println("║            DELETE OPERATION - REMOVE PRISONER              ║");
@@ -287,11 +290,12 @@ public class CRUD {
             // Confirm deletion
             System.out.println("\n--- Requesting User Confirmation ---");
             int confirm = JOptionPane.showConfirmDialog(null,
-                "Are you sure you want to delete prisoner:\n" +
+                "Delete prisoner and move to Trash Bin?\n\n" +
                 "ID: " + prisoner.getPrisonerId() + "\n" +
                 "Name: " + prisoner.getName() + "\n" +
                 "Crime: " + prisoner.getCrimeType() + "\n\n" +
-                "This action cannot be undone!",
+                "Prisoner will be moved to Trash (Stack).\n" +
+                "You can restore them later using the Restore feature.",
                 "Confirm Deletion",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE);
@@ -313,15 +317,23 @@ public class CRUD {
                 System.out.println("✓ Successfully removed from list");
                 System.out.println("List size: " + sizeBefore + " → " + sizeAfter);
                 
+                // Push to trash bin (Stack)
+                TrashBinOperation.pushToTrash(trashBin, prisoner);
+                
                 System.out.println("\n╔════════════════════════════════════════════════════════════╗");
                 System.out.println("║               DELETE OPERATION SUCCESSFUL                  ║");
                 System.out.println("╚════════════════════════════════════════════════════════════╝");
                 System.out.println("Deleted: " + prisoner.getName() + " (ID: " + prisonerId + ")");
                 System.out.println("Remaining prisoners: " + sizeAfter);
+                System.out.println("Prisoners in trash: " + trashBin.size());
                 
                 JOptionPane.showMessageDialog(null,
-                    "Prisoner deleted successfully!",
-                    "Success",
+                    "Prisoner moved to Trash Bin!\n\n" +
+                    "Name: " + prisoner.getName() + "\n" +
+                    "ID: " + prisoner.getPrisonerId() + "\n\n" +
+                    "Prisoners in trash: " + trashBin.size() + "\n" +
+                    "You can restore using the Restore button.",
+                    "Moved to Trash",
                     JOptionPane.INFORMATION_MESSAGE);
             } else {
                 System.err.println("✗ Failed to remove from list");

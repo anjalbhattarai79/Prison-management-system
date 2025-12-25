@@ -3,6 +3,7 @@ package controller;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -15,6 +16,7 @@ public class PrisonController {
     
     private LinkedList<PrisonerModel> prisonDetails = new LinkedList<>();
     private Queue<PrisonerModel> recentlyAddedQueue = new LinkedList<>();
+    private Stack<PrisonerModel> trashBin = new Stack<>(); // Stack for deleted prisoners
     private int nextPrisonerId = 106; // Start after your sample data
     
     /**
@@ -82,12 +84,46 @@ public class PrisonController {
     }
     
     /**
-     * DELETE - Remove prisoner from system
+     * DELETE - Remove prisoner from system and move to trash bin
      * Delegates to CRUD.deletePrisoner
      * @return true if deletion successful, false otherwise
      */
     public boolean deletePrisoner(int prisonerId) {
-        return CRUD.deletePrisoner(prisonDetails, prisonerId);
+        return CRUD.deletePrisoner(prisonDetails, trashBin, prisonerId);
+    }
+    
+    /**
+     * RESTORE - Restore most recently deleted prisoner from trash bin (Stack pop)
+     * Delegates to TrashBinOperation.popFromTrash
+     * @return The restored prisoner, or null if trash is empty
+     */
+    public PrisonerModel restorePrisoner() {
+        return TrashBinOperation.popFromTrash(trashBin, prisonDetails);
+    }
+    
+    /**
+     * View trash bin contents
+     * Delegates to TrashBinOperation.viewTrashContents
+     * @return HTML formatted string of trash contents
+     */
+    public String getTrashContents() {
+        return TrashBinOperation.viewTrashContents(trashBin);
+    }
+    
+    /**
+     * Get number of prisoners in trash
+     * @return trash bin size
+     */
+    public int getTrashSize() {
+        return TrashBinOperation.getTrashSize(trashBin);
+    }
+    
+    /**
+     * Empty trash bin permanently
+     * Delegates to TrashBinOperation.emptyTrash
+     */
+    public void emptyTrash() {
+        TrashBinOperation.emptyTrash(trashBin);
     }
     
     /**
