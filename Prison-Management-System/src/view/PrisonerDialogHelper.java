@@ -61,6 +61,58 @@ public class PrisonerDialogHelper {
         
         if (result == JOptionPane.OK_OPTION) {
             try {
+                // ========== INPUT VALIDATION ==========
+                String name = nameField.getText().trim();
+                String address = addressField.getText().trim();
+                String crimeType = crimeTypeField.getText().trim();
+                String crimeDesc = crimeDescArea.getText().trim();
+                String location = locationField.getText().trim();
+                String familyCode = familyCodeField.getText().trim();
+                
+                // Validate required fields
+                if (name.isEmpty()) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Name is required and cannot be empty.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                // Validate name format (letters, spaces, hyphens, apostrophes only)
+                if (!name.matches("^[a-zA-Z\\s'-]+$")) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Name can only contain letters, spaces, hyphens, and apostrophes.\n" +
+                        "No numbers or special characters allowed.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                // Validate name length
+                if (name.length() > 100) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Name is too long. Maximum 100 characters allowed.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                if (crimeType.isEmpty()) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Crime Type is required and cannot be empty.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                if (location.isEmpty()) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Prison Location is required and cannot be empty.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
                 // Get admission date
                 java.util.Date utilDate = (java.util.Date) admissionDateSpinner.getValue();
                 LocalDate admissionDate = utilDate.toInstant()
@@ -68,16 +120,16 @@ public class PrisonerDialogHelper {
                     .toLocalDate();
                 
                 boolean success = controller.addPrisoner(
-                    nameField.getText(),
+                    name,
                     (int) ageSpinner.getValue(),
                     (String) genderCombo.getSelectedItem(),
-                    addressField.getText(),
-                    crimeTypeField.getText(),
-                    crimeDescArea.getText(),
+                    address,
+                    crimeType,
+                    crimeDesc,
                     admissionDate,
                     (int) sentenceSpinner.getValue(),
-                    locationField.getText(),
-                    familyCodeField.getText(),
+                    location,
+                    familyCode,
                     (String) statusCombo.getSelectedItem()
                 );
                 
@@ -148,6 +200,58 @@ public class PrisonerDialogHelper {
         
         if (result == JOptionPane.OK_OPTION) {
             try {
+                // ========== INPUT VALIDATION ==========
+                String name = nameField.getText().trim();
+                String address = addressField.getText().trim();
+                String crimeType = crimeTypeField.getText().trim();
+                String crimeDesc = crimeDescArea.getText().trim();
+                String location = locationField.getText().trim();
+                String familyCode = familyCodeField.getText().trim();
+                
+                // Validate required fields
+                if (name.isEmpty()) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Name is required and cannot be empty.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                // Validate name format (letters, spaces, hyphens, apostrophes only)
+                if (!name.matches("^[a-zA-Z\\s'-]+$")) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Name can only contain letters, spaces, hyphens, and apostrophes.\n" +
+                        "No numbers or special characters allowed.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                // Validate name length
+                if (name.length() > 100) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Name is too long. Maximum 100 characters allowed.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                if (crimeType.isEmpty()) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Crime Type is required and cannot be empty.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                if (location.isEmpty()) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Prison Location is required and cannot be empty.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
                 // Get admission date
                 java.util.Date utilDate = (java.util.Date) admissionDateSpinner.getValue();
                 LocalDate admissionDate = utilDate.toInstant()
@@ -156,16 +260,16 @@ public class PrisonerDialogHelper {
                 
                 boolean success = controller.updatePrisoner(
                     prisoner.getPrisonerId(),
-                    nameField.getText(),
+                    name,
                     (int) ageSpinner.getValue(),
                     (String) genderCombo.getSelectedItem(),
-                    addressField.getText(),
-                    crimeTypeField.getText(),
-                    crimeDescArea.getText(),
+                    address,
+                    crimeType,
+                    crimeDesc,
                     admissionDate,
                     (int) sentenceSpinner.getValue(),
-                    locationField.getText(),
-                    familyCodeField.getText()
+                    location,
+                    familyCode
                 );
                 
                 if (success) {

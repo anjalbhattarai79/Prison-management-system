@@ -65,11 +65,57 @@ public class CRUD {
             }
             System.out.println("✓ Name validation passed: " + name.trim());
             
+            // Validate name format
+            if (!name.trim().matches("^[a-zA-Z\\s'-]+$")) {
+                System.err.println("[VALIDATION FAILED] Name contains invalid characters: " + name);
+                throw new IllegalArgumentException("Name can only contain letters, spaces, hyphens, and apostrophes");
+            }
+            System.out.println("✓ Name format validation passed");
+            
+            // Validate name length
+            if (name.trim().length() > 100) {
+                System.err.println("[VALIDATION FAILED] Name too long: " + name.length() + " characters");
+                throw new IllegalArgumentException("Name cannot exceed 100 characters");
+            }
+            System.out.println("✓ Name length validation passed");
+            
             if (age <= 0 || age > 120) {
                 System.err.println("[VALIDATION FAILED] Age out of range: " + age);
                 throw new IllegalArgumentException("Age must be between 1 and 120");
             }
             System.out.println("✓ Age validation passed: " + age);
+            
+            // Validate gender
+            if (gender == null || (!gender.equals("Male") && !gender.equals("Female") && !gender.equals("Other"))) {
+                System.err.println("[VALIDATION FAILED] Invalid gender: " + gender);
+                throw new IllegalArgumentException("Gender must be Male, Female, or Other");
+            }
+            System.out.println("✓ Gender validation passed: " + gender);
+            
+            // Validate address
+            if (address == null || address.trim().isEmpty()) {
+                System.err.println("[VALIDATION FAILED] Address is empty");
+                throw new IllegalArgumentException("Address cannot be empty");
+            }
+            if (address.trim().length() > 200) {
+                System.err.println("[VALIDATION FAILED] Address too long: " + address.length() + " characters");
+                throw new IllegalArgumentException("Address cannot exceed 200 characters");
+            }
+            System.out.println("✓ Address validation passed");
+            
+            // Validate crime type
+            if (crimeType == null || crimeType.trim().isEmpty()) {
+                System.err.println("[VALIDATION FAILED] Crime type is empty");
+                throw new IllegalArgumentException("Crime type cannot be empty");
+            }
+            System.out.println("✓ Crime type validation passed: " + crimeType);
+            
+            // Validate prison location
+            if (prisonLocation == null || prisonLocation.trim().isEmpty()) {
+                System.err.println("[VALIDATION FAILED] Prison location is empty");
+                throw new IllegalArgumentException("Prison location cannot be empty");
+            }
+            System.out.println("✓ Prison location validation passed: " + prisonLocation);
             
             if (sentenceDuration <= 0) {
                 System.err.println("[VALIDATION FAILED] Invalid sentence duration: " + sentenceDuration);
@@ -195,11 +241,57 @@ public class CRUD {
             }
             System.out.println("✓ Name validation passed: " + name.trim());
             
+            // Validate name format
+            if (!name.trim().matches("^[a-zA-Z\\s'-]+$")) {
+                System.err.println("[VALIDATION FAILED] Name contains invalid characters: " + name);
+                throw new IllegalArgumentException("Name can only contain letters, spaces, hyphens, and apostrophes");
+            }
+            System.out.println("✓ Name format validation passed");
+            
+            // Validate name length
+            if (name.trim().length() > 100) {
+                System.err.println("[VALIDATION FAILED] Name too long: " + name.length() + " characters");
+                throw new IllegalArgumentException("Name cannot exceed 100 characters");
+            }
+            System.out.println("✓ Name length validation passed");
+            
             if (age <= 0 || age > 120) {
                 System.err.println("[VALIDATION FAILED] Age out of range: " + age);
                 throw new IllegalArgumentException("Age must be between 1 and 120");
             }
             System.out.println("✓ Age validation passed: " + age);
+            
+            // Validate gender
+            if (gender == null || (!gender.equals("Male") && !gender.equals("Female") && !gender.equals("Other"))) {
+                System.err.println("[VALIDATION FAILED] Invalid gender: " + gender);
+                throw new IllegalArgumentException("Gender must be Male, Female, or Other");
+            }
+            System.out.println("✓ Gender validation passed: " + gender);
+            
+            // Validate address
+            if (address == null || address.trim().isEmpty()) {
+                System.err.println("[VALIDATION FAILED] Address is empty");
+                throw new IllegalArgumentException("Address cannot be empty");
+            }
+            if (address.trim().length() > 200) {
+                System.err.println("[VALIDATION FAILED] Address too long: " + address.length() + " characters");
+                throw new IllegalArgumentException("Address cannot exceed 200 characters");
+            }
+            System.out.println("✓ Address validation passed");
+            
+            // Validate crime type
+            if (crimeType == null || crimeType.trim().isEmpty()) {
+                System.err.println("[VALIDATION FAILED] Crime type is empty");
+                throw new IllegalArgumentException("Crime type cannot be empty");
+            }
+            System.out.println("✓ Crime type validation passed: " + crimeType);
+            
+            // Validate prison location
+            if (prisonLocation == null || prisonLocation.trim().isEmpty()) {
+                System.err.println("[VALIDATION FAILED] Prison location is empty");
+                throw new IllegalArgumentException("Prison location cannot be empty");
+            }
+            System.out.println("✓ Prison location validation passed: " + prisonLocation);
             
             if (sentenceDuration <= 0) {
                 System.err.println("[VALIDATION FAILED] Invalid sentence duration: " + sentenceDuration);
