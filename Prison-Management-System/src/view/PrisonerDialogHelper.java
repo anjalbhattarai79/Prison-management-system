@@ -20,6 +20,41 @@ public class PrisonerDialogHelper {
         // Create form fields
         JTextField nameField = new JTextField(20);
         JSpinner ageSpinner = new JSpinner(new SpinnerNumberModel(25, 18, 120, 1));
+        JSpinner.NumberEditor ageEditor = new JSpinner.NumberEditor(ageSpinner);
+        ageSpinner.setEditor(ageEditor);
+        ageEditor.getTextField().setInputVerifier(new InputVerifier() {
+            @Override
+            public boolean verify(JComponent input) {
+                JTextField tf = (JTextField) input;
+                try {
+                    int value = Integer.parseInt(tf.getText());
+                    if (value < 18) {
+                        JOptionPane.showMessageDialog(parent,
+                            "Age must be at least 18 years.",
+                            "Invalid Input",
+                            JOptionPane.WARNING_MESSAGE);
+                        tf.setText("18");
+                        return false;
+                    }
+                    if (value > 120) {
+                        JOptionPane.showMessageDialog(parent,
+                            "Age must be 120 years or less.",
+                            "Invalid Input",
+                            JOptionPane.WARNING_MESSAGE);
+                        tf.setText("120");
+                        return false;
+                    }
+                    return true;
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Please enter a valid number for age.",
+                        "Invalid Input",
+                        JOptionPane.WARNING_MESSAGE);
+                    tf.setText("25");
+                    return false;
+                }
+            }
+        });
         JComboBox<String> genderCombo = new JComboBox<>(new String[]{"Male", "Female", "Other"});
         JTextField addressField = new JTextField(20);
         JTextField crimeTypeField = new JTextField(20);
@@ -34,8 +69,75 @@ public class PrisonerDialogHelper {
         JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(admissionDateSpinner, "yyyy-MM-dd");
         admissionDateSpinner.setEditor(dateEditor);
         admissionDateSpinner.setValue(new java.util.Date());
+        dateEditor.getTextField().setInputVerifier(new InputVerifier() {
+            @Override
+            public boolean verify(JComponent input) {
+                JTextField tf = (JTextField) input;
+                try {
+                    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+                    sdf.setLenient(false); // Strict date parsing - rejects invalid dates
+                    java.util.Date parsedDate = sdf.parse(tf.getText());
+                    
+                    // Check if date is in the future
+                    if (parsedDate.after(new java.util.Date())) {
+                        JOptionPane.showMessageDialog(parent,
+                            "Admission date cannot be in the future.\n" +
+                            "Please enter a valid past or present date.",
+                            "Invalid Date",
+                            JOptionPane.WARNING_MESSAGE);
+                        admissionDateSpinner.setValue(new java.util.Date());
+                        return false;
+                    }
+                    return true;
+                } catch (java.text.ParseException e) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Invalid date format.\n" +
+                        "Please use format: yyyy-MM-dd (e.g., 2024-12-25)\n" +
+                        "Note: Days must be 1-31, months must be 1-12.",
+                        "Invalid Date Format",
+                        JOptionPane.WARNING_MESSAGE);
+                    admissionDateSpinner.setValue(new java.util.Date());
+                    return false;
+                }
+            }
+        });
         
         JSpinner sentenceSpinner = new JSpinner(new SpinnerNumberModel(12, 1, 600, 1));
+        JSpinner.NumberEditor sentenceEditor = new JSpinner.NumberEditor(sentenceSpinner);
+        sentenceSpinner.setEditor(sentenceEditor);
+        sentenceEditor.getTextField().setInputVerifier(new InputVerifier() {
+            @Override
+            public boolean verify(JComponent input) {
+                JTextField tf = (JTextField) input;
+                try {
+                    int value = Integer.parseInt(tf.getText());
+                    if (value < 1) {
+                        JOptionPane.showMessageDialog(parent,
+                            "Sentence duration must be at least 1 month.",
+                            "Invalid Input",
+                            JOptionPane.WARNING_MESSAGE);
+                        tf.setText("1");
+                        return false;
+                    }
+                    if (value > 600) {
+                        JOptionPane.showMessageDialog(parent,
+                            "Sentence duration must be 600 months or less.",
+                            "Invalid Input",
+                            JOptionPane.WARNING_MESSAGE);
+                        tf.setText("600");
+                        return false;
+                    }
+                    return true;
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Please enter a valid number for sentence duration.",
+                        "Invalid Input",
+                        JOptionPane.WARNING_MESSAGE);
+                    tf.setText("12");
+                    return false;
+                }
+            }
+        });
         JTextField locationField = new JTextField(20);
         
         // Status dropdown
@@ -67,7 +169,7 @@ public class PrisonerDialogHelper {
                 String crimeType = crimeTypeField.getText().trim();
                 String crimeDesc = crimeDescArea.getText().trim();
                 String location = locationField.getText().trim();
-                String familyCode = familyCodeField.getText().trim();
+                familyCode = familyCodeField.getText().trim();
                 
                 // Validate required fields
                 if (name.isEmpty()) {
@@ -113,6 +215,46 @@ public class PrisonerDialogHelper {
                     return;
                 }
                 
+                // Validate age (prevent negative or zero values)
+                int age = (int) ageSpinner.getValue();
+                if (age <= 0) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Age must be a positive number.\n" +
+                        "Age cannot be zero or negative.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                if (age < 18) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Age must be at least 18 years.\n" +
+                        "Minors cannot be admitted to prison.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                if (age > 150) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Age must be 150 years or less.\n" +
+                        "Please enter a valid age.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                // Validate sentence duration (prevent negative values)
+                int sentenceDuration = (int) sentenceSpinner.getValue();
+                if (sentenceDuration <= 0) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Sentence duration must be a positive number.\n" +
+                        "Cannot be zero or negative.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
                 // Get admission date
                 java.util.Date utilDate = (java.util.Date) admissionDateSpinner.getValue();
                 LocalDate admissionDate = utilDate.toInstant()
@@ -121,13 +263,13 @@ public class PrisonerDialogHelper {
                 
                 boolean success = controller.addPrisoner(
                     name,
-                    (int) ageSpinner.getValue(),
+                    age,
                     (String) genderCombo.getSelectedItem(),
                     address,
                     crimeType,
                     crimeDesc,
                     admissionDate,
-                    (int) sentenceSpinner.getValue(),
+                    sentenceDuration,
                     location,
                     familyCode,
                     (String) statusCombo.getSelectedItem()
@@ -159,6 +301,41 @@ public class PrisonerDialogHelper {
         // Create form fields pre-filled with prisoner data
         JTextField nameField = new JTextField(prisoner.getName(), 20);
         JSpinner ageSpinner = new JSpinner(new SpinnerNumberModel(prisoner.getAge(), 18, 120, 1));
+        JSpinner.NumberEditor ageEditor = new JSpinner.NumberEditor(ageSpinner);
+        ageSpinner.setEditor(ageEditor);
+        ageEditor.getTextField().setInputVerifier(new InputVerifier() {
+            @Override
+            public boolean verify(JComponent input) {
+                JTextField tf = (JTextField) input;
+                try {
+                    int value = Integer.parseInt(tf.getText());
+                    if (value < 18) {
+                        JOptionPane.showMessageDialog(parent,
+                            "Age must be at least 18 years.",
+                            "Invalid Input",
+                            JOptionPane.WARNING_MESSAGE);
+                        tf.setText("18");
+                        return false;
+                    }
+                    if (value > 120) {
+                        JOptionPane.showMessageDialog(parent,
+                            "Age must be 120 years or less.",
+                            "Invalid Input",
+                            JOptionPane.WARNING_MESSAGE);
+                        tf.setText("120");
+                        return false;
+                    }
+                    return true;
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Please enter a valid number for age.",
+                        "Invalid Input",
+                        JOptionPane.WARNING_MESSAGE);
+                    tf.setText(String.valueOf(prisoner.getAge()));
+                    return false;
+                }
+            }
+        });
         JComboBox<String> genderCombo = new JComboBox<>(new String[]{"Male", "Female", "Other"});
         genderCombo.setSelectedItem(prisoner.getGender());
         JTextField addressField = new JTextField(prisoner.getAddress(), 20);
@@ -174,9 +351,76 @@ public class PrisonerDialogHelper {
         JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(admissionDateSpinner, "yyyy-MM-dd");
         admissionDateSpinner.setEditor(dateEditor);
         admissionDateSpinner.setValue(java.sql.Date.valueOf(prisoner.getAdmissionDate()));
+        dateEditor.getTextField().setInputVerifier(new InputVerifier() {
+            @Override
+            public boolean verify(JComponent input) {
+                JTextField tf = (JTextField) input;
+                try {
+                    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+                    sdf.setLenient(false); // Strict date parsing - rejects invalid dates
+                    java.util.Date parsedDate = sdf.parse(tf.getText());
+                    
+                    // Check if date is in the future
+                    if (parsedDate.after(new java.util.Date())) {
+                        JOptionPane.showMessageDialog(parent,
+                            "Admission date cannot be in the future.\n" +
+                            "Please enter a valid past or present date.",
+                            "Invalid Date",
+                            JOptionPane.WARNING_MESSAGE);
+                        admissionDateSpinner.setValue(java.sql.Date.valueOf(prisoner.getAdmissionDate()));
+                        return false;
+                    }
+                    return true;
+                } catch (java.text.ParseException e) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Invalid date format.\n" +
+                        "Please use format: yyyy-MM-dd (e.g., 2024-12-25)\n" +
+                        "Note: Days must be 1-31, months must be 1-12.",
+                        "Invalid Date Format",
+                        JOptionPane.WARNING_MESSAGE);
+                    admissionDateSpinner.setValue(java.sql.Date.valueOf(prisoner.getAdmissionDate()));
+                    return false;
+                }
+            }
+        });
         
         JSpinner sentenceSpinner = new JSpinner(new SpinnerNumberModel(
             prisoner.getSentenceDuration(), 1, 600, 1));
+        JSpinner.NumberEditor sentenceEditor = new JSpinner.NumberEditor(sentenceSpinner);
+        sentenceSpinner.setEditor(sentenceEditor);
+        sentenceEditor.getTextField().setInputVerifier(new InputVerifier() {
+            @Override
+            public boolean verify(JComponent input) {
+                JTextField tf = (JTextField) input;
+                try {
+                    int value = Integer.parseInt(tf.getText());
+                    if (value < 1) {
+                        JOptionPane.showMessageDialog(parent,
+                            "Sentence duration must be at least 1 month.",
+                            "Invalid Input",
+                            JOptionPane.WARNING_MESSAGE);
+                        tf.setText("1");
+                        return false;
+                    }
+                    if (value > 600) {
+                        JOptionPane.showMessageDialog(parent,
+                            "Sentence duration must be 600 months or less.",
+                            "Invalid Input",
+                            JOptionPane.WARNING_MESSAGE);
+                        tf.setText("600");
+                        return false;
+                    }
+                    return true;
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Please enter a valid number for sentence duration.",
+                        "Invalid Input",
+                        JOptionPane.WARNING_MESSAGE);
+                    tf.setText(String.valueOf(prisoner.getSentenceDuration()));
+                    return false;
+                }
+            }
+        });
         JTextField locationField = new JTextField(prisoner.getPrisonLocation(), 20);
         
         // Status dropdown
@@ -252,22 +496,82 @@ public class PrisonerDialogHelper {
                     return;
                 }
                 
+                // Validate age (prevent negative or zero values)
+                int age = (int) ageSpinner.getValue();
+                if (age <= 0) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Age must be a positive number.\n" +
+                        "Age cannot be zero or negative.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                if (age < 18) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Age must be at least 18 years.\n" +
+                        "Minors cannot be admitted to prison.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                if (age > 150) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Age must be 150 years or less.\n" +
+                        "Please enter a valid age.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
+                // Validate sentence duration (prevent negative values)
+                int sentenceDuration = (int) sentenceSpinner.getValue();
+                if (sentenceDuration <= 0) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Sentence duration must be a positive number.\n" +
+                        "Cannot be zero or negative.",
+                        "Validation Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                
                 // Get admission date
-                java.util.Date utilDate = (java.util.Date) admissionDateSpinner.getValue();
-                LocalDate admissionDate = utilDate.toInstant()
-                    .atZone(java.time.ZoneId.systemDefault())
-                    .toLocalDate();
+                LocalDate admissionDate;
+                try {
+                    java.util.Date utilDate = (java.util.Date) admissionDateSpinner.getValue();
+                    admissionDate = utilDate.toInstant()
+                        .atZone(java.time.ZoneId.systemDefault())
+                        .toLocalDate();
+                    
+                    // Additional validation: Check if date is in the future
+                    if (admissionDate.isAfter(LocalDate.now())) {
+                        JOptionPane.showMessageDialog(parent,
+                            "Admission date cannot be in the future.\n" +
+                            "Please enter a valid past or present date.",
+                            "Validation Error",
+                            JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(parent,
+                        "Invalid admission date.\n" +
+                        "Error: " + e.getMessage(),
+                        "Date Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 
                 boolean success = controller.updatePrisoner(
                     prisoner.getPrisonerId(),
                     name,
-                    (int) ageSpinner.getValue(),
+                    age,
                     (String) genderCombo.getSelectedItem(),
                     address,
                     crimeType,
                     crimeDesc,
                     admissionDate,
-                    (int) sentenceSpinner.getValue(),
+                    sentenceDuration,
                     location,
                     familyCode
                 );

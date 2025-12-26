@@ -17,7 +17,12 @@ public class PrisonController {
     private LinkedList<PrisonerModel> prisonDetails = new LinkedList<>();
     private Queue<PrisonerModel> recentlyAddedQueue = new LinkedList<>();
     private Stack<PrisonerModel> trashBin = new Stack<>(); // Stack for deleted prisoners
-    private int nextPrisonerId = 106; // Start after your sample data
+    private int nextPrisonerId = 101; // Start at 101
+    
+    // Constructor - load sample data
+    public PrisonController() {
+        loadSampleNepalData();
+    }
     
     /**
      * Add a new prisoner (CREATE operation)
@@ -193,31 +198,9 @@ public class PrisonController {
     
     // Your existing methods remain the same...
     public void prepareInitialData() {
-        prisonDetails.clear();
-        
-        // Add sample prisoners
-        prisonDetails.add(new PrisonerModel(101, "John Doe", 35, "Male",
-                "123 Main St", "Robbery", "Bank robbery with weapons",
-                LocalDate.of(2023, 5, 15), 60, "Central Prison", "FAM12345"));
-        
-        prisonDetails.add(new PrisonerModel(102, "Jane Smith", 28, "Female",
-                "456 Oak Ave", "Fraud", "Credit card fraud",
-                LocalDate.of(2022, 8, 20), 48, "Women's Prison", "FAM67890"));
-        
-        prisonDetails.add(new PrisonerModel(103, "Robert Johnson", 42, "Male",
-                "789 Pine Rd", "Assault", "Bar fight resulting in injury",
-                LocalDate.of(2024, 1, 10), 36, "County Jail", "FAM11223"));
-        
-        prisonDetails.add(new PrisonerModel(104, "Michael Brown", 31, "Male",
-                "101 Maple St", "Drug Possession", "Possession of illegal substances",
-                LocalDate.of(2023, 11, 5), 24, "Central Prison", "FAM44556"));
-        
-        prisonDetails.add(new PrisonerModel(105, "Sarah Wilson", 26, "Female",
-                "202 Cedar Ln", "Theft", "Shoplifting at department store",
-                LocalDate.of(2024, 3, 18), 12, "Women's Prison", "FAM77889"));
-        
-        // Initialize next ID
-        nextPrisonerId = 106;
+        // Sample data already loaded in constructor via loadSampleNepalData()
+        // This method kept for backwards compatibility but does nothing
+        System.out.println("prepareInitialData() called - data already loaded in constructor");
     }
     
     public void loadPrisonerToTable(JTable prisonerTable) {
@@ -240,5 +223,93 @@ public class PrisonController {
             };
             model.addRow(row);
         }
+    }
+    
+    /**
+     * Load sample prisoner data with Nepali context
+     * Demonstrates variety in all fields including status and health
+     */
+    private void loadSampleNepalData() {
+        System.out.println("\n╔════════════════════════════════════════════════════════════╗");
+        System.out.println("║          LOADING SAMPLE NEPAL PRISONER DATA                ║");
+        System.out.println("╚════════════════════════════════════════════════════════════╝");
+        
+        // Sample 1 - Active, Good Health
+        addPrisoner("Ram Bahadur Thapa", 32, "Male", "Tinkune-15, Kathmandu",
+                    "Theft", "Shoplifting from local store", 
+                    LocalDate.of(2024, 3, 15), 18, "Central Jail, Kathmandu", 
+                    "FAM101", "Active");
+        getPrisonerById(101).setHealthStatus("Good");
+        
+        // Sample 2 - Active, Fair Health
+        addPrisoner("Sita Maya Gurung", 28, "Female", "Lakeside-6, Pokhara, Kaski",
+                    "Fraud", "Financial fraud in cooperative society",
+                    LocalDate.of(2024, 5, 20), 24, "Pokhara Jail, Kaski",
+                    "FAM102", "Active");
+        getPrisonerById(102).setHealthStatus("Fair");
+        
+        // Sample 3 - Released
+        addPrisoner("Bikash Sharma Poudel", 35, "Male", "Dharan-12, Sunsari",
+                    "Assault", "Physical assault during dispute",
+                    LocalDate.of(2023, 1, 10), 18, "Biratnagar Jail, Morang",
+                    "FAM103", "Released");
+        getPrisonerById(103).setHealthStatus("Good");
+        
+        // Sample 4 - Medical, Poor Health
+        addPrisoner("Anita Kumari Rai", 26, "Female", "Birtamod-8, Jhapa",
+                    "Embezzlement", "Misappropriation of office funds",
+                    LocalDate.of(2024, 1, 8), 36, "Biratnagar Jail, Morang",
+                    "FAM104", "Medical");
+        getPrisonerById(104).setHealthStatus("Poor");
+        
+        // Sample 5 - Active, Critical Health
+        addPrisoner("Prakash Tamang", 42, "Male", "Bouddha-7, Kathmandu",
+                    "Drug Possession", "Possession of illegal narcotics",
+                    LocalDate.of(2023, 8, 22), 48, "Central Jail, Kathmandu",
+                    "FAM105", "Active");
+        getPrisonerById(105).setHealthStatus("Critical");
+        
+        // Sample 6 - Transferred
+        addPrisoner("Sunita Devi Chaudhary", 30, "Female", "Nepalgunj-3, Banke",
+                    "Forgery", "Document forgery for land registration",
+                    LocalDate.of(2024, 2, 14), 20, "Nepalgunj Jail, Banke",
+                    "FAM106", "Transferred");
+        getPrisonerById(106).setHealthStatus("Good");
+        
+        // Sample 7 - Solitary, Fair Health
+        addPrisoner("Nirajan Karki Chhetri", 29, "Male", "Chitwan Bazaar-4, Chitwan",
+                    "Cyber Crime", "Online fraud and identity theft",
+                    LocalDate.of(2024, 6, 5), 28, "Bharatpur Jail, Chitwan",
+                    "FAM107", "Solitary");
+        getPrisonerById(107).setHealthStatus("Fair");
+        
+        // Sample 8 - Parole, Good Health
+        addPrisoner("Gita Kumari Adhikari", 38, "Female", "Butwal-11, Rupandehi",
+                    "Smuggling", "Smuggling goods across border",
+                    LocalDate.of(2023, 6, 18), 30, "Bhairahawa Jail, Rupandehi",
+                    "FAM108", "Parole");
+        getPrisonerById(108).setHealthStatus("Good");
+        
+        // Sample 9 - Active, Fair Health
+        addPrisoner("Dinesh Bahadur Magar", 45, "Male", "Hetauda-10, Makwanpur",
+                    "Corruption", "Bribery and corruption in public office",
+                    LocalDate.of(2024, 4, 12), 60, "Central Jail, Kathmandu",
+                    "FAM109", "Active");
+        getPrisonerById(109).setHealthStatus("Fair");
+        
+        // Sample 10 - Released
+        addPrisoner("Krishna Kumari Shrestha", 33, "Female", "Bhaktapur Durbar-9, Bhaktapur",
+                    "Robbery", "Armed robbery of jewelry shop",
+                    LocalDate.of(2022, 9, 25), 24, "Central Jail, Kathmandu",
+                    "FAM110", "Released");
+        getPrisonerById(110).setHealthStatus("Good");
+        
+        System.out.println("✓ Successfully loaded 10 sample prisoner records");
+        System.out.println("  - Names: Nepali local names from various ethnic groups");
+        System.out.println("  - Addresses: Nepal cities and districts");
+        System.out.println("  - Prisons: Actual Nepal prison locations");
+        System.out.println("  - Status variety: Active, Released, Medical, Transferred, Solitary, Parole");
+        System.out.println("  - Health variety: Good, Fair, Poor, Critical");
+        System.out.println("╚════════════════════════════════════════════════════════════╝\n");
     }
 }

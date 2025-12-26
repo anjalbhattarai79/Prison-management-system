@@ -657,9 +657,9 @@
                               <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="PrisonerRecordLabel" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jScrollPane1" min="-2" pref="1067" max="-2" attributes="0"/>
+                                  <Component id="jScrollPane1" min="-2" pref="1088" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="929" max="32767" attributes="0"/>
+                              <EmptySpace pref="908" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -669,8 +669,8 @@
                               <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                               <Component id="PrisonerRecordLabel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="jScrollPane1" min="-2" pref="312" max="-2" attributes="0"/>
-                              <EmptySpace pref="368" max="32767" attributes="0"/>
+                              <Component id="jScrollPane1" min="-2" pref="457" max="-2" attributes="0"/>
+                              <EmptySpace pref="223" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
