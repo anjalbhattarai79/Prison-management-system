@@ -21,12 +21,13 @@ public class PrisonerModel {
     private String prisonLocation;
     private String healthStatus;
     private String familyCode; // For family portal access
+    private String photoPath; // Path to prisoner's photo
 
     // Constructor (auto-calculate status)
     public PrisonerModel(int prisonerId, String name, int age, String gender,
                    String address, String crimeType, String crimeDescription,
                    LocalDate admissionDate, int sentenceDuration,
-                   String prisonLocation, String familyCode) {
+                   String prisonLocation, String familyCode, String photoPath) {
         this.prisonerId = prisonerId;
         this.name = name;
         this.age = age;
@@ -39,6 +40,7 @@ public class PrisonerModel {
         this.releaseDate = admissionDate.plusMonths(sentenceDuration);
         this.prisonLocation = prisonLocation;
         this.familyCode = familyCode;
+        this.photoPath = photoPath;
         this.status = "Active";
         this.healthStatus = "Good";
     }
@@ -47,7 +49,7 @@ public class PrisonerModel {
     public PrisonerModel(int prisonerId, String name, int age, String gender,
                    String address, String crimeType, String crimeDescription,
                    LocalDate admissionDate, int sentenceDuration,
-                   String prisonLocation, String familyCode, String status) {
+                   String prisonLocation, String familyCode, String photoPath, String status) {
         this.prisonerId = prisonerId;
         this.name = name;
         this.age = age;
@@ -60,6 +62,7 @@ public class PrisonerModel {
         this.releaseDate = admissionDate.plusMonths(sentenceDuration);
         this.prisonLocation = prisonLocation;
         this.familyCode = familyCode;
+        this.photoPath = photoPath;
         this.status = status;  // Use provided status
         this.healthStatus = "Good";
     }
@@ -179,6 +182,14 @@ public class PrisonerModel {
 
     public void setFamilyCode(String familyCode) {
         this.familyCode = familyCode;
+    }
+
+    public String getPhotoPath() {
+        return photoPath;
+    }
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
     }
 
     // Main method for testing

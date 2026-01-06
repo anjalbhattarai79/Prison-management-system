@@ -5,15 +5,24 @@ import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 
 /**
- * Custom cell renderer for displaying Edit and Delete buttons in table
+ * Custom cell renderer for displaying View, Edit and Delete buttons in table
  * @author Anjal Bhattarai
  */
 public class TableButtonRenderer extends JPanel implements TableCellRenderer {
+    private JButton viewButton;
     private JButton editButton;
     private JButton deleteButton;
     
     public TableButtonRenderer() {
         setLayout(new FlowLayout(FlowLayout.CENTER, 5, 0));
+        
+        // Create View button
+        viewButton = new JButton("View");
+        viewButton.setPreferredSize(new Dimension(70, 25));
+        viewButton.setBackground(new Color(46, 213, 115)); // Green (#2ED573)
+        viewButton.setForeground(Color.WHITE);
+        viewButton.setFocusPainted(false);
+        viewButton.setBorderPainted(false);
         
         // Create Edit button
         editButton = new JButton("Edit");
@@ -31,6 +40,7 @@ public class TableButtonRenderer extends JPanel implements TableCellRenderer {
         deleteButton.setFocusPainted(false);
         deleteButton.setBorderPainted(false);
         
+        add(viewButton);
         add(editButton);
         add(deleteButton);
     }

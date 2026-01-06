@@ -7,6 +7,7 @@ import java.util.Stack;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import model.Activity;
 import model.PrisonerModel;
 
 /**
@@ -17,6 +18,8 @@ public class PrisonController {
     private LinkedList<PrisonerModel> prisonDetails = new LinkedList<>();
     private Queue<PrisonerModel> recentlyAddedQueue = new LinkedList<>();
     private Stack<PrisonerModel> trashBin = new Stack<>(); // Stack for deleted prisoners
+    private Queue<Activity> recentActivities = new LinkedList<>(); // Activity tracking
+    private static final int MAX_ACTIVITIES = 10; // Maximum activities to track
     private int nextPrisonerId = 101; // Start at 101
     
     // Constructor - load sample data
@@ -31,14 +34,17 @@ public class PrisonController {
     public boolean addPrisoner(String name, int age, String gender, String address,
                               String crimeType, String crimeDescription,
                               LocalDate admissionDate, int sentenceDuration,
-                              String prisonLocation, String familyCode, String status) {
+                              String prisonLocation, String familyCode, String photoPath, String status) {
         Object[] result = CRUD.addPrisoner(prisonDetails, recentlyAddedQueue, nextPrisonerId,
                                            name, age, gender, address, crimeType, crimeDescription,
-                                           admissionDate, sentenceDuration, prisonLocation, familyCode, status);
+                                           admissionDate, sentenceDuration, prisonLocation, familyCode, photoPath, status);
         
         boolean success = (Boolean) result[0];
         if (success) {
-            nextPrisonerId = (Integer) result[1]; // Update next ID
+            int newId = (Integer) result[1];
+            // Log activity
+            logActivity("ADDED", name, nextPrisonerId);
+            nextPrisonerId = newId; // Update next ID
         }
         return success;
     }
@@ -52,10 +58,10 @@ public class PrisonController {
     }
     
     /**
-     * Get recent activities for display
+     * Get recently added prisoners for display
      * Delegates to CRUD.getRecentActivities
      */
-    public String getRecentActivities() {
+    public String getRecentlyAdded() {
         return CRUD.getRecentActivities(recentlyAddedQueue);
     }
     
@@ -82,10 +88,14 @@ public class PrisonController {
     public boolean updatePrisoner(int prisonerId, String name, int age, String gender,
                                   String address, String crimeType, String crimeDescription,
                                   LocalDate admissionDate, int sentenceDuration,
-                                  String prisonLocation, String familyCode) {
-        return CRUD.updatePrisoner(prisonDetails, prisonerId, name, age, gender,
+                                  String prisonLocation, String familyCode, String photoPath) {
+        boolean success = CRUD.updatePrisoner(prisonDetails, prisonerId, name, age, gender,
                                    address, crimeType, crimeDescription, admissionDate,
-                                   sentenceDuration, prisonLocation, familyCode);
+                                   sentenceDuration, prisonLocation, familyCode, photoPath);
+        if (success) {
+            logActivity("UPDATED", name, prisonerId);
+        }
+        return success;
     }
     
     /**
@@ -94,7 +104,12 @@ public class PrisonController {
      * @return true if deletion successful, false otherwise
      */
     public boolean deletePrisoner(int prisonerId) {
-        return CRUD.deletePrisoner(prisonDetails, trashBin, prisonerId);
+        PrisonerModel prisoner = getPrisonerById(prisonerId);
+        boolean success = CRUD.deletePrisoner(prisonDetails, trashBin, prisonerId);
+        if (success && prisoner != null) {
+            logActivity("DELETED", prisoner.getName(), prisonerId);
+        }
+        return success;
     }
     
     /**
@@ -103,7 +118,11 @@ public class PrisonController {
      * @return The restored prisoner, or null if trash is empty
      */
     public PrisonerModel restorePrisoner() {
-        return TrashBinOperation.popFromTrash(trashBin, prisonDetails);
+        PrisonerModel restored = TrashBinOperation.popFromTrash(trashBin, prisonDetails);
+        if (restored != null) {
+            logActivity("RESTORED", restored.getName(), restored.getPrisonerId());
+        }
+        return restored;
     }
     
     /**
@@ -128,7 +147,81 @@ public class PrisonController {
      * Delegates to TrashBinOperation.emptyTrash
      */
     public void emptyTrash() {
+        int count = trashBin.size();
         TrashBinOperation.emptyTrash(trashBin);
+        if (count > 0) {
+            logActivity("EMPTIED TRASH", count + " prisoner(s)", 0);
+        }
+    }
+    
+    /**
+     * Get the trash bin Stack for viewing
+     * @return Stack of deleted prisoners
+     */
+    public Stack<PrisonerModel> getTrashBin() {
+        return trashBin;
+    }
+    
+    /**
+     * Log an activity
+     */
+    private void logActivity(String action, String prisonerName, int prisonerId) {
+        Activity activity = new Activity(action, prisonerName, prisonerId);
+        recentActivities.offer(activity);
+        
+        // Keep only last MAX_ACTIVITIES
+        while (recentActivities.size() > MAX_ACTIVITIES) {
+            recentActivities.poll();
+        }
+        
+        System.out.println("[ACTIVITY LOGGED] " + activity.toString());
+    }
+    
+    /**
+     * Get recent activities queue
+     * @return Queue of recent activities
+     */
+    public Queue<Activity> getRecentActivitiesQueue() {
+        return recentActivities;
+    }
+    
+    /**
+     * Get formatted recent activities string for display
+     */
+    public String getFormattedActivities() {
+        if (recentActivities.isEmpty()) {
+            return "<html><b>Recent Activities:</b><br>No recent activities</html>";
+        }
+        
+        StringBuilder sb = new StringBuilder("<html><b>Recent Activities:</b><br>");
+        // Convert to array and reverse to show newest first
+        Activity[] activities = recentActivities.toArray(new Activity[0]);
+        for (int i = activities.length - 1; i >= 0; i--) {
+            Activity activity = activities[i];
+            String color = getColorForAction(activity.getAction());
+            sb.append("<font color='").append(color).append("'>• ");
+            sb.append(activity.getAction()).append("</font>: ");
+            sb.append(activity.getPrisonerName());
+            sb.append(" (ID: ").append(activity.getPrisonerId()).append(") ");
+            sb.append("<font color='gray'><i>").append(activity.getFormattedTime()).append("</i></font><br>");
+        }
+        sb.append("</html>");
+        return sb.toString();
+    }
+    
+    /**
+     * Get color for activity action
+     */
+    private String getColorForAction(String action) {
+        switch (action) {
+            case "ADDED": return "#2ED573"; // Green
+            case "UPDATED": return "#3498DB"; // Blue
+            case "DELETED": return "#E74C3C"; // Red
+            case "RESTORED": return "#F39C12"; // Orange
+            case "EMPTIED TRASH": return "#8E44AD"; // Purple
+            case "VIEWED": return "#9B59B6"; // Purple
+            default: return "#34495E"; // Dark gray
+        }
     }
     
     /**
@@ -238,70 +331,70 @@ public class PrisonController {
         addPrisoner("Ram Bahadur Thapa", 32, "Male", "Tinkune-15, Kathmandu",
                     "Theft", "Shoplifting from local store", 
                     LocalDate.of(2024, 3, 15), 18, "Central Jail, Kathmandu", 
-                    "FAM101", "Active");
+                    "FAM101", "Prison-Management-System/images/1.jpg", "Active");
         getPrisonerById(101).setHealthStatus("Good");
         
         // Sample 2 - Active, Fair Health
         addPrisoner("Sita Maya Gurung", 28, "Female", "Lakeside-6, Pokhara, Kaski",
                     "Fraud", "Financial fraud in cooperative society",
                     LocalDate.of(2024, 5, 20), 24, "Pokhara Jail, Kaski",
-                    "FAM102", "Active");
+                    "FAM102", "Prison-Management-System/images/2.jpg", "Active");
         getPrisonerById(102).setHealthStatus("Fair");
         
         // Sample 3 - Released
         addPrisoner("Bikash Sharma Poudel", 35, "Male", "Dharan-12, Sunsari",
                     "Assault", "Physical assault during dispute",
                     LocalDate.of(2023, 1, 10), 18, "Biratnagar Jail, Morang",
-                    "FAM103", "Released");
+                    "FAM103", "Prison-Management-System/images/3.jpg", "Released");
         getPrisonerById(103).setHealthStatus("Good");
         
         // Sample 4 - Medical, Poor Health
         addPrisoner("Anita Kumari Rai", 26, "Female", "Birtamod-8, Jhapa",
                     "Embezzlement", "Misappropriation of office funds",
                     LocalDate.of(2024, 1, 8), 36, "Biratnagar Jail, Morang",
-                    "FAM104", "Medical");
+                    "FAM104", "Prison-Management-System/images/4.jpg", "Medical");
         getPrisonerById(104).setHealthStatus("Poor");
         
         // Sample 5 - Active, Critical Health
         addPrisoner("Prakash Tamang", 42, "Male", "Bouddha-7, Kathmandu",
                     "Drug Possession", "Possession of illegal narcotics",
                     LocalDate.of(2023, 8, 22), 48, "Central Jail, Kathmandu",
-                    "FAM105", "Active");
+                    "FAM105", "Prison-Management-System/images/5.jpg", "Active");
         getPrisonerById(105).setHealthStatus("Critical");
         
         // Sample 6 - Transferred
         addPrisoner("Sunita Devi Chaudhary", 30, "Female", "Nepalgunj-3, Banke",
                     "Forgery", "Document forgery for land registration",
                     LocalDate.of(2024, 2, 14), 20, "Nepalgunj Jail, Banke",
-                    "FAM106", "Transferred");
+                    "FAM106", "Prison-Management-System/images/default-prisoner.png", "Transferred");
         getPrisonerById(106).setHealthStatus("Good");
         
         // Sample 7 - Solitary, Fair Health
         addPrisoner("Nirajan Karki Chhetri", 29, "Male", "Chitwan Bazaar-4, Chitwan",
                     "Cyber Crime", "Online fraud and identity theft",
                     LocalDate.of(2024, 6, 5), 28, "Bharatpur Jail, Chitwan",
-                    "FAM107", "Solitary");
+                    "FAM107", "Prison-Management-System/images/default-prisoner.png", "Solitary");
         getPrisonerById(107).setHealthStatus("Fair");
         
         // Sample 8 - Parole, Good Health
         addPrisoner("Gita Kumari Adhikari", 38, "Female", "Butwal-11, Rupandehi",
                     "Smuggling", "Smuggling goods across border",
                     LocalDate.of(2023, 6, 18), 30, "Bhairahawa Jail, Rupandehi",
-                    "FAM108", "Parole");
+                    "FAM108", "Prison-Management-System/images/default-prisoner.png", "Parole");
         getPrisonerById(108).setHealthStatus("Good");
         
         // Sample 9 - Active, Fair Health
         addPrisoner("Dinesh Bahadur Magar", 45, "Male", "Hetauda-10, Makwanpur",
                     "Corruption", "Bribery and corruption in public office",
                     LocalDate.of(2024, 4, 12), 60, "Central Jail, Kathmandu",
-                    "FAM109", "Active");
+                    "FAM109", "Prison-Management-System/images/default-prisoner.png", "Active");
         getPrisonerById(109).setHealthStatus("Fair");
         
         // Sample 10 - Released
         addPrisoner("Krishna Kumari Shrestha", 33, "Female", "Bhaktapur Durbar-9, Bhaktapur",
                     "Robbery", "Armed robbery of jewelry shop",
                     LocalDate.of(2022, 9, 25), 24, "Central Jail, Kathmandu",
-                    "FAM110", "Released");
+                    "FAM110", "Prison-Management-System/images/default-prisoner.png", "Released");
         getPrisonerById(110).setHealthStatus("Good");
         
         System.out.println("✓ Successfully loaded 10 sample prisoner records");

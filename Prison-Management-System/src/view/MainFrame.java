@@ -146,6 +146,16 @@ public class MainFrame extends javax.swing.JFrame {
         
         
     }     
+    
+    /**
+     * Update Recent Activity Panel with latest activities
+     */
+    public void updateRecentActivities() {
+        String activitiesHTML = controller.getFormattedActivities();
+        ActivityLabel.setText(activitiesHTML);
+        ActivityLabel.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        System.out.println("[MainFrame] Recent activities updated");
+    }
      
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -549,8 +559,8 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGap(23, 23, 23)
                 .addGroup(PrisonerRecordPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(PrisonerRecordLabel)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1067, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(929, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1088, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(908, Short.MAX_VALUE))
         );
         PrisonerRecordPanelLayout.setVerticalGroup(
             PrisonerRecordPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -558,8 +568,8 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGap(24, 24, 24)
                 .addComponent(PrisonerRecordLabel)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(368, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 457, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(223, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout AdminDashboardBodyPanelLayout = new javax.swing.GroupLayout(AdminDashboardBodyPanel);
@@ -766,6 +776,8 @@ public class MainFrame extends javax.swing.JFrame {
         controller.loadPrisonerToTable(PrisonerRecordTable);
         // Setup action buttons in table
         PrisonerDialogHelper.setupTableButtons(PrisonerRecordTable, controller, this);
+        // Initialize Recent Activities panel
+        updateRecentActivities();
         showAdminDashboardPanel();
     }//GEN-LAST:event_AdminLoginActionPerformed
 
@@ -797,47 +809,9 @@ public class MainFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_VisitRequestsButtonActionPerformed
 
     private void TrashBinButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TrashBinButtonActionPerformed
-        // Show trash bin menu with options
-        String[] options = {"View Trash", "Restore Last Deleted", "Empty Trash", "Cancel"};
-        
-        int choice = JOptionPane.showOptionDialog(this,
-            "Trash Bin (Stack - LIFO)\n" +
-            "Prisoners in trash: " + controller.getTrashSize() + "\n\n" +
-            "What would you like to do?",
-            "Trash Bin Management",
-            JOptionPane.DEFAULT_OPTION,
-            JOptionPane.QUESTION_MESSAGE,
-            null,
-            options,
-            options[0]);
-        
-        switch (choice) {
-            case 0: // View Trash
-                String trashContents = controller.getTrashContents();
-                JOptionPane.showMessageDialog(this,
-                    trashContents,
-                    "Trash Bin Contents",
-                    JOptionPane.INFORMATION_MESSAGE);
-                break;
-                
-            case 1: // Restore Last Deleted (Pop from Stack)
-                PrisonerModel restored = controller.restorePrisoner();
-                if (restored != null) {
-                    // Refresh table to show restored prisoner
-                    controller.loadPrisonerToTable(PrisonerRecordTable);
-                    PrisonerDialogHelper.setupTableButtons(PrisonerRecordTable, controller, this);
-                }
-                break;
-                
-            case 2: // Empty Trash
-                controller.emptyTrash();
-                break;
-                
-            case 3: // Cancel
-            default:
-                // Do nothing
-                break;
-        }
+        // Open TrashBinDialog to view trash in tabular format
+        TrashBinDialog trashDialog = new TrashBinDialog(this, controller, PrisonerRecordTable);
+        trashDialog.setVisible(true);
     }//GEN-LAST:event_TrashBinButtonActionPerformed
   
     /**

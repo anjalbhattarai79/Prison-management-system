@@ -7,11 +7,12 @@ import controller.PrisonController;
 import model.PrisonerModel;
 
 /**
- * Custom cell editor for handling Edit and Delete button clicks in table
+ * Custom cell editor for handling View, Edit and Delete button clicks in table
  * @author Anjal Bhattarai
  */
 public class TableButtonEditor extends DefaultCellEditor {
     private JPanel panel;
+    private JButton viewButton;
     private JButton editButton;
     private JButton deleteButton;
     private int currentRow;
@@ -27,6 +28,14 @@ public class TableButtonEditor extends DefaultCellEditor {
         this.parentFrame = parentFrame;
         
         panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
+        
+        // Create View button
+        viewButton = new JButton("View");
+        viewButton.setPreferredSize(new Dimension(70, 25));
+        viewButton.setBackground(new Color(46, 213, 115)); // Green (#2ED573)
+        viewButton.setForeground(Color.WHITE);
+        viewButton.setFocusPainted(false);
+        viewButton.setBorderPainted(false);
         
         // Create Edit button
         editButton = new JButton("Edit");
@@ -44,8 +53,8 @@ public class TableButtonEditor extends DefaultCellEditor {
         deleteButton.setFocusPainted(false);
         deleteButton.setBorderPainted(false);
         
-        // Edit button action
-        editButton.addActionListener(e -> {
+        // View button action
+        viewButton.addActionListener(e -> {
             fireEditingStopped();
             int row = currentRow;
             SwingUtilities.invokeLater(() -> {
@@ -53,7 +62,7 @@ public class TableButtonEditor extends DefaultCellEditor {
                     Object idValue = table.getValueAt(row, 0);
                     if (idValue == null) {
                         JOptionPane.showMessageDialog(parentFrame,
-                            "Cannot edit: Prisoner ID not found",
+                            "Cannot view: Prisoner ID not found",
                             "Error",
                             JOptionPane.ERROR_MESSAGE);
                         return;
@@ -61,7 +70,7 @@ public class TableButtonEditor extends DefaultCellEditor {
                     int prisonerId = (int) idValue;
                     PrisonerModel prisoner = controller.getPrisonerById(prisonerId);
                     if (prisoner != null) {
-                        PrisonerDialogHelper.showEditDialog(prisoner, controller, parentFrame, table);
+                        new ViewDetailsDialog(parentFrame, prisoner, controller, table).setVisible(true);
                     } else {
                         JOptionPane.showMessageDialog(parentFrame,
                             "Prisoner not found in system",
@@ -69,6 +78,50 @@ public class TableButtonEditor extends DefaultCellEditor {
                             JOptionPane.ERROR_MESSAGE);
                     }
                 } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(parentFrame,
+                        "Error viewing prisoner: " + ex.getMessage(),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                }
+            });
+        });
+        
+        // Edit button action
+        editButton.addActionListener(e -> {
+            System.out.println("[DEBUG] Edit button clicked on row: " + currentRow);
+            fireEditingStopped();
+            int row = currentRow;
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    System.out.println("[DEBUG] Getting prisoner ID from row: " + row);
+                    Object idValue = table.getValueAt(row, 0);
+                    System.out.println("[DEBUG] ID Value: " + idValue);
+                    if (idValue == null) {
+                        System.err.println("[DEBUG] ID Value is null!");
+                        JOptionPane.showMessageDialog(parentFrame,
+                            "Cannot edit: Prisoner ID not found",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    int prisonerId = (int) idValue;
+                    System.out.println("[DEBUG] Fetching prisoner with ID: " + prisonerId);
+                    PrisonerModel prisoner = controller.getPrisonerById(prisonerId);
+                    if (prisoner != null) {
+                        System.out.println("[DEBUG] Prisoner found: " + prisoner.getName());
+                        System.out.println("[DEBUG] Calling showEditDialog...");
+                        PrisonerDialogHelper.showEditDialog(prisoner, controller, parentFrame, table);
+                        System.out.println("[DEBUG] showEditDialog returned");
+                    } else {
+                        System.err.println("[DEBUG] Prisoner not found with ID: " + prisonerId);
+                        JOptionPane.showMessageDialog(parentFrame,
+                            "Prisoner not found in system",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception ex) {
+                    System.err.println("[DEBUG] Exception in edit button: " + ex.getMessage());
+                    ex.printStackTrace();
                     JOptionPane.showMessageDialog(parentFrame,
                         "Error editing prisoner: " + ex.getMessage(),
                         "Error",
@@ -95,6 +148,10 @@ public class TableButtonEditor extends DefaultCellEditor {
                     if (controller.deletePrisoner(prisonerId)) {
                         controller.loadPrisonerToTable(table);
                         setupTableButtons(); // Re-setup buttons after refresh
+                        // Update recent activities
+                        if (parentFrame instanceof MainFrame) {
+                            ((MainFrame) parentFrame).updateRecentActivities();
+                        }
                     }
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(parentFrame,
@@ -105,6 +162,7 @@ public class TableButtonEditor extends DefaultCellEditor {
             });
         });
         
+        panel.add(viewButton);
         panel.add(editButton);
         panel.add(deleteButton);
     }

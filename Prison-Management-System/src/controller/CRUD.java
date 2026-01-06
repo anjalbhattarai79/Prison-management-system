@@ -49,7 +49,7 @@ public class CRUD {
                                        String name, int age, String gender, String address,
                                        String crimeType, String crimeDescription,
                                        LocalDate admissionDate, int sentenceDuration,
-                                       String prisonLocation, String familyCode, String status) {
+                                       String prisonLocation, String familyCode, String photoPath, String status) {
         try {
             System.out.println("\n╔════════════════════════════════════════════════════════════╗");
             System.out.println("║              CREATE OPERATION - ADD PRISONER               ║");
@@ -149,7 +149,7 @@ public class CRUD {
             PrisonerModel newPrisoner = new PrisonerModel(prisonerId, 
                 name.trim(), age, gender, address.trim(), crimeType, 
                 crimeDescription, admissionDate, sentenceDuration,
-                prisonLocation, familyCode, status);
+                prisonLocation, familyCode, photoPath, status);
             System.out.println("✓ Prisoner object created");
             
             // ========== ADD TO MAIN LIST ==========
@@ -216,7 +216,7 @@ public class CRUD {
                                          int prisonerId, String name, int age, String gender,
                                          String address, String crimeType, String crimeDescription,
                                          LocalDate admissionDate, int sentenceDuration,
-                                         String prisonLocation, String familyCode) {
+                                         String prisonLocation, String familyCode, String photoPath) {
         try {
             System.out.println("\n╔════════════════════════════════════════════════════════════╗");
             System.out.println("║             UPDATE OPERATION - EDIT PRISONER               ║");
@@ -330,6 +330,7 @@ public class CRUD {
             prisoner.setSentenceDuration(sentenceDuration);
             prisoner.setPrisonLocation(prisonLocation);
             prisoner.setFamilyCode(familyCode);
+            prisoner.setPhotoPath(photoPath);
             
             System.out.println("After:  " + prisoner.getName() + ", Age: " + prisoner.getAge() + ", Sentence: " + prisoner.getSentenceDuration() + " months");
             

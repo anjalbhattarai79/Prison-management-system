@@ -1,8 +1,10 @@
 package view;
 
 import java.awt.*;
+import java.io.File;
 import java.time.LocalDate;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import controller.PrisonController;
 import model.PrisonerModel;
 
@@ -150,10 +152,39 @@ public class PrisonerDialogHelper {
         String familyCode = "FAM" + nextId;
         JTextField familyCodeField = new JTextField(familyCode);
         
+        // Photo upload components
+        JLabel photoPreviewLabel = new JLabel();
+        photoPreviewLabel.setPreferredSize(new Dimension(150, 150));
+        photoPreviewLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+        photoPreviewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        photoPreviewLabel.setText("No Photo");
+        String[] selectedPhotoPath = {"Prison-Management-System/images/default-prisoner.png"}; // Default photo
+        
+        JButton choosePhotoBtn = new JButton("Choose Photo");
+        choosePhotoBtn.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setCurrentDirectory(new File("Prison-Management-System/images"));
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                "Image Files (*.jpg, *.png)", "jpg", "jpeg", "png");
+            fileChooser.setFileFilter(filter);
+            
+            int result = fileChooser.showOpenDialog(parent);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                selectedPhotoPath[0] = selectedFile.getPath();
+                
+                // Display preview
+                ImageIcon icon = new ImageIcon(selectedPhotoPath[0]);
+                Image scaledImage = icon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+                photoPreviewLabel.setIcon(new ImageIcon(scaledImage));
+                photoPreviewLabel.setText("");
+            }
+        });
+        
         // Create panel with GridBagLayout
         JPanel panel = createFormPanel(nameField, ageSpinner, genderCombo, addressField,
                 crimeTypeField, crimeDescScroll, admissionDateSpinner, sentenceSpinner,
-                locationField, statusCombo, familyCodeField);
+                locationField, statusCombo, familyCodeField, photoPreviewLabel, choosePhotoBtn);
         
         // Show dialog
         int result = JOptionPane.showConfirmDialog(parent, panel,
@@ -272,12 +303,17 @@ public class PrisonerDialogHelper {
                     sentenceDuration,
                     location,
                     familyCode,
+                    selectedPhotoPath[0],
                     (String) statusCombo.getSelectedItem()
                 );
                 
                 if (success) {
                     controller.loadPrisonerToTable(table);
                     setupTableButtons(table, controller, parent);
+                    // Update recent activities
+                    if (parent instanceof MainFrame) {
+                        ((MainFrame) parent).updateRecentActivities();
+                    }
                     JOptionPane.showMessageDialog(parent,
                         "Prisoner added successfully!\nPrisoner ID: " + nextId +
                         "\nFamily Code: " + familyCodeField.getText(),
@@ -298,6 +334,7 @@ public class PrisonerDialogHelper {
      */
     public static void showEditDialog(PrisonerModel prisoner, PrisonController controller,
                                       JFrame parent, JTable table) {
+        System.out.println("[DEBUG] showEditDialog called for prisoner: " + prisoner.getName() + " (ID: " + prisoner.getPrisonerId() + ")");
         // Create form fields pre-filled with prisoner data
         JTextField nameField = new JTextField(prisoner.getName(), 20);
         JSpinner ageSpinner = new JSpinner(new SpinnerNumberModel(prisoner.getAge(), 18, 120, 1));
@@ -431,10 +468,49 @@ public class PrisonerDialogHelper {
         
         JTextField familyCodeField = new JTextField(prisoner.getFamilyCode(), 20);
         
+        // Photo upload components with existing photo
+        JLabel photoPreviewLabel = new JLabel();
+        photoPreviewLabel.setPreferredSize(new Dimension(150, 150));
+        photoPreviewLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+        photoPreviewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        
+        String[] selectedPhotoPath = {prisoner.getPhotoPath() != null ? prisoner.getPhotoPath() : "Prison-Management-System/images/default-prisoner.png"};
+        
+        // Display existing photo
+        try {
+            ImageIcon icon = new ImageIcon(selectedPhotoPath[0]);
+            Image scaledImage = icon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+            photoPreviewLabel.setIcon(new ImageIcon(scaledImage));
+        } catch (Exception ex) {
+            photoPreviewLabel.setText("No Photo");
+            ex.printStackTrace(); // Debug: print error to console
+        }
+        
+        JButton choosePhotoBtn = new JButton("Choose Photo");
+        choosePhotoBtn.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setCurrentDirectory(new File("Prison-Management-System/images"));
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                "Image Files (*.jpg, *.png)", "jpg", "jpeg", "png");
+            fileChooser.setFileFilter(filter);
+            
+            int result = fileChooser.showOpenDialog(parent);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                selectedPhotoPath[0] = selectedFile.getPath();
+                
+                // Display preview
+                ImageIcon icon = new ImageIcon(selectedPhotoPath[0]);
+                Image scaledImage = icon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+                photoPreviewLabel.setIcon(new ImageIcon(scaledImage));
+                photoPreviewLabel.setText("");
+            }
+        });
+        
         // Create panel
         JPanel panel = createFormPanel(nameField, ageSpinner, genderCombo, addressField,
                 crimeTypeField, crimeDescScroll, admissionDateSpinner, sentenceSpinner,
-                locationField, statusCombo, familyCodeField);
+                locationField, statusCombo, familyCodeField, photoPreviewLabel, choosePhotoBtn);
         
         // Show dialog
         int result = JOptionPane.showConfirmDialog(parent, panel,
@@ -573,7 +649,8 @@ public class PrisonerDialogHelper {
                     admissionDate,
                     sentenceDuration,
                     location,
-                    familyCode
+                    familyCode,
+                    selectedPhotoPath[0]
                 );
                 
                 if (success) {
@@ -582,6 +659,10 @@ public class PrisonerDialogHelper {
                     
                     controller.loadPrisonerToTable(table);
                     setupTableButtons(table, controller, parent);
+                    // Update recent activities
+                    if (parent instanceof MainFrame) {
+                        ((MainFrame) parent).updateRecentActivities();
+                    }
                     JOptionPane.showMessageDialog(parent,
                         "Prisoner updated successfully!",
                         "Success",
@@ -602,7 +683,8 @@ public class PrisonerDialogHelper {
     private static JPanel createFormPanel(JTextField nameField, JSpinner ageSpinner,
             JComboBox<String> genderCombo, JTextField addressField, JTextField crimeTypeField,
             JScrollPane crimeDescScroll, JSpinner admissionDateSpinner, JSpinner sentenceSpinner,
-            JTextField locationField, JComboBox<String> statusCombo, JTextField familyCodeField) {
+            JTextField locationField, JComboBox<String> statusCombo, JTextField familyCodeField,
+            JLabel photoPreviewLabel, JButton choosePhotoBtn) {
         
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
@@ -611,6 +693,19 @@ public class PrisonerDialogHelper {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         
         int row = 0;
+        
+        // Photo (spans both columns)
+        gbc.gridx = 0; gbc.gridy = row; gbc.gridwidth = 1;
+        panel.add(new JLabel("Photo:"), gbc);
+        gbc.gridx = 1;
+        JPanel photoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        photoPanel.add(photoPreviewLabel);
+        photoPanel.add(choosePhotoBtn);
+        panel.add(photoPanel, gbc);
+        row++;
+        
+        // Reset gridwidth
+        gbc.gridwidth = 1;
         
         // Name
         gbc.gridx = 0; gbc.gridy = row;
@@ -713,7 +808,7 @@ public class PrisonerDialogHelper {
         table.getColumnModel().getColumn(7).setPreferredWidth(80);   // Sentence
         table.getColumnModel().getColumn(8).setPreferredWidth(100);  // Location
         table.getColumnModel().getColumn(9).setPreferredWidth(90);   // Status
-        table.getColumnModel().getColumn(10).setPreferredWidth(160); // Actions
+        table.getColumnModel().getColumn(10).setPreferredWidth(240); // Actions (View, Edit, Delete)
         
         // Setup button renderer and editor
         table.getColumnModel().getColumn(10).setCellRenderer(new TableButtonRenderer());
