@@ -1,7 +1,7 @@
 # Prison-management-system 🏛️🚔
 
 ## Project Overview 🔍
-A simple Prison Management and Information System (PMIS) to record inmate check-ins, activities, and alerts. The README documents core entities, recommended data structures, controllers (business logic), UI views, and example workflows for the coursework.
+A simple Prison Management and Information System (PMIS) to record inmate check-ins, activities, and alerts. The README documents core entities, recommended data structures, controllers (business logic), UI views, and example workflows. This project is a part of coursework.
 
 ## Domain Entities 🧩
 - Inmate 👤
