@@ -27,32 +27,35 @@ public class SearchOperation {
         int right = prisoners.length - 1;
         int comparisons = 0;
         
-        System.out.println("=== Binary Search Started ===");
-        System.out.println("Searching for ID: " + targetId);
-        System.out.println("Array size: " + prisoners.length);
+        System.out.println("\n=== Binary Search ===");
+        System.out.println("Searching for Prisoner ID: " + targetId);
+        System.out.println("Total records to search: " + prisoners.length);
+        System.out.println("\nStep-by-step execution:");
         
         while (left <= right) {
             comparisons++;
-            int mid = left + (right - left) / 2; // Prevent overflow
+            int mid = left + (right - left) / 2;
             int midId = prisoners[mid].getPrisonerId();
             
-            System.out.println("Comparison #" + comparisons + ": Checking index " + mid + " (ID: " + midId + ")");
+            System.out.println("  Step " + comparisons + ": Checking range [" + left + "-" + right + "] → Middle index: " + mid + " (ID: " + midId + ")");
             
             if (midId == targetId) {
-                System.out.println("✓ Found at index " + mid + " after " + comparisons + " comparisons");
+                System.out.println("     ✓ Match found! Target ID " + targetId + " = Current ID " + midId);
+                System.out.println("\n✓ Search complete in " + comparisons + " step(s).");
+                System.out.println("  Binary search divides search space in half each time: O(log n) complexity\n");
                 return prisoners[mid];
             }
             
             if (midId < targetId) {
-                System.out.println("  → Target is greater, searching right half");
+                System.out.println("     → Target " + targetId + " > " + midId + ", search RIGHT half");
                 left = mid + 1;
             } else {
-                System.out.println("  → Target is smaller, searching left half");
+                System.out.println("     → Target " + targetId + " < " + midId + ", search LEFT half");
                 right = mid - 1;
             }
         }
         
-        System.out.println("✗ Not found after " + comparisons + " comparisons");
+        System.out.println("✗ Prisoner not found. Checked " + comparisons + " location(s).\n");
         return null;
     }
     
@@ -69,9 +72,10 @@ public class SearchOperation {
         String term = searchTerm.trim().toLowerCase();
         int comparisons = 0;
         
-        System.out.println("=== Linear Search Started ===");
+        System.out.println("\n=== Linear Search ===");
         System.out.println("Searching for: \"" + searchTerm + "\"");
-        System.out.println("List size: " + prisonDetails.size());
+        System.out.println("Total records: " + prisonDetails.size());
+        System.out.println("\nStep-by-step execution (showing first 5 checks):");
         
         // Sequential search through entire list
         for (PrisonerModel prisoner : prisonDetails) {
@@ -79,18 +83,21 @@ public class SearchOperation {
             boolean nameMatch = prisoner.getName().toLowerCase().contains(term);
             boolean crimeMatch = prisoner.getCrimeType().toLowerCase().contains(term);
             
-            System.out.println("Comparison #" + comparisons + ": ID=" + prisoner.getPrisonerId() + 
-                             ", Name=\"" + prisoner.getName() + "\", Crime=\"" + prisoner.getCrimeType() + "\"");
+            // Show first 5 checks to demonstrate linear scanning
+            if (comparisons <= 5) {
+                System.out.println("  Step " + comparisons + ": Checking ID " + prisoner.getPrisonerId() + " (" + prisoner.getName() + ") → " +
+                                 (nameMatch || crimeMatch ? "✓ MATCH!" : "✗ No match"));
+            } else if (comparisons == 6) {
+                System.out.println("  ... (continuing to check remaining records)");
+            }
             
             if (nameMatch || crimeMatch) {
-                System.out.println("  ✓ Match found!");
                 results.add(prisoner);
             }
         }
         
-        System.out.println("=== Search Complete ===");
-        System.out.println("Total comparisons: " + comparisons);
-        System.out.println("Matches found: " + results.size());
+        System.out.println("\n✓ Search complete! Found " + results.size() + " match(es).");
+        System.out.println("  Checked all " + comparisons + " records sequentially (Linear search: O(n) complexity)\n");
         
         return results;
     }

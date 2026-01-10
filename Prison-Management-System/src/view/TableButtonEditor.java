@@ -121,7 +121,6 @@ public class TableButtonEditor extends DefaultCellEditor {
                     }
                 } catch (Exception ex) {
                     System.err.println("[DEBUG] Exception in edit button: " + ex.getMessage());
-                    ex.printStackTrace();
                     JOptionPane.showMessageDialog(parentFrame,
                         "Error editing prisoner: " + ex.getMessage(),
                         "Error",

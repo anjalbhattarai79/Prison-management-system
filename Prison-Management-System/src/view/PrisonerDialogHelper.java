@@ -531,7 +531,6 @@ public class PrisonerDialogHelper {
             photoPreviewLabel.setIcon(new ImageIcon(scaledImage));
         } catch (Exception ex) {
             photoPreviewLabel.setText("No Photo");
-            ex.printStackTrace(); // Debug: print error to console
         }
         
         JButton choosePhotoBtn = new JButton("Choose Photo");

@@ -30,15 +30,16 @@ public class SortOperation {
             java.util.function.Function<PrisonerModel, T> keyExtractor, boolean ascending) {
         
         int n = list.size();
-        System.out.println("\n=== BUBBLE SORT STARTED ===");
-        System.out.println("Initial list size: " + n);
-        
         int totalComparisons = 0;
         int totalSwaps = 0;
         
+        System.out.println("\nBubble Sort - Step-by-step execution:");
+        
         for (int i = 0; i < n - 1; i++) {
             boolean swapped = false;
-            System.out.println("\n--- Pass " + (i + 1) + " ---");
+            int passSwaps = 0;
+            
+            System.out.println("  Pass " + (i + 1) + ": Comparing adjacent elements...");
             
             for (int j = 0; j < n - i - 1; j++) {
                 PrisonerModel current = list.get(j);
@@ -50,28 +51,27 @@ public class SortOperation {
                 totalComparisons++;
                 int comparison = currentKey.compareTo(nextKey);
                 
-                // Determine if swap is needed based on sort order
                 boolean shouldSwap = ascending ? comparison > 0 : comparison < 0;
                 
                 if (shouldSwap) {
-                    // Swap elements
                     list.set(j, next);
                     list.set(j + 1, current);
                     swapped = true;
                     totalSwaps++;
-                    System.out.println("  Swap: Position " + j + " (" + currentKey + ") <-> Position " + (j + 1) + " (" + nextKey + ")");
+                    passSwaps++;
                 }
             }
             
+            System.out.println("     → " + passSwaps + " swap(s) made. Largest element \"bubbled\" to position " + (n - i - 1));
+            
             if (!swapped) {
-                System.out.println("  No swaps in this pass - List is sorted!");
+                System.out.println("     → No swaps needed - list is sorted!");
                 break;
             }
         }
         
-        System.out.println("\n=== BUBBLE SORT COMPLETED ===");
-        System.out.println("Total Comparisons: " + totalComparisons);
-        System.out.println("Total Swaps: " + totalSwaps);
+        System.out.println("\n  ✓ Bubble Sort completed: " + totalComparisons + " comparisons, " + totalSwaps + " total swaps");
+        System.out.println("     (Each pass moves the largest unsorted element to its final position)");
     }
     
     /**
@@ -87,20 +87,20 @@ public class SortOperation {
             java.util.function.Function<PrisonerModel, T> keyExtractor, boolean ascending) {
         
         int n = list.size();
-        System.out.println("\n=== INSERTION SORT STARTED ===");
-        System.out.println("Initial list size: " + n);
-        
         int totalComparisons = 0;
         int totalInsertions = 0;
+        
+        System.out.println("\nInsertion Sort - Step-by-step execution:");
+        System.out.println("  (Building sorted portion from left to right)\n");
         
         for (int i = 1; i < n; i++) {
             PrisonerModel key = list.get(i);
             T keyValue = keyExtractor.apply(key);
+            int originalPos = i;
             int j = i - 1;
             
-            System.out.println("\n--- Inserting element at position " + i + " (Key: " + keyValue + ") ---");
+            System.out.println("  Step " + i + ": Inserting element at position " + i + " (value: " + keyValue + ")");
             
-            // Move elements greater than key one position ahead
             while (j >= 0) {
                 PrisonerModel compared = list.get(j);
                 T comparedValue = keyExtractor.apply(compared);
@@ -112,26 +112,24 @@ public class SortOperation {
                 
                 if (shouldMove) {
                     list.set(j + 1, compared);
-                    System.out.println("  Shifting: " + comparedValue + " from position " + j + " to " + (j + 1));
                     j--;
                 } else {
                     break;
                 }
             }
             
-            // Insert key at correct position
-            if (j + 1 != i) {
-                list.set(j + 1, key);
+            int finalPos = j + 1;
+            if (finalPos != i) {
+                list.set(finalPos, key);
                 totalInsertions++;
-                System.out.println("  Inserted: " + keyValue + " at position " + (j + 1));
+                System.out.println("     → Inserted at position " + finalPos + " (moved from " + originalPos + ")");
             } else {
-                System.out.println("  Element already in correct position");
+                System.out.println("     → Already in correct position " + finalPos);
             }
         }
         
-        System.out.println("\n=== INSERTION SORT COMPLETED ===");
-        System.out.println("Total Comparisons: " + totalComparisons);
-        System.out.println("Total Insertions: " + totalInsertions);
+        System.out.println("\n  ✓ Insertion Sort completed: " + totalComparisons + " comparisons, " + totalInsertions + " insertions");
+        System.out.println("     (Each element inserted into its correct position in the sorted portion)");
     }
     
     /**
@@ -159,21 +157,17 @@ public class SortOperation {
         LinkedList<PrisonerModel> sorted = new LinkedList<>(prisonDetails);
         
         try {
-            System.out.println("\n╔════════════════════════════════════════════════════════════╗");
-            System.out.println("║           SORTING PRISONERS - ALGORITHM DEMONSTRATION       ║");
-            System.out.println("╚════════════════════════════════════════════════════════════╝");
-            System.out.println("Sort Field: " + sortBy);
-            System.out.println("Sort Order: " + (ascending ? "Ascending" : "Descending"));
-            System.out.println("Number of Records: " + sorted.size());
+            System.out.println("\n=== Sorting Prisoners ===");
+            System.out.println("Sorting " + sorted.size() + " records by: " + sortBy);
+            System.out.println("Order: " + (ascending ? "Ascending (smallest first)" : "Descending (largest first)"));
             
             // Choose sorting algorithm based on list size
-            // For demonstration purposes: use Bubble Sort for smaller lists, Insertion Sort for larger
             boolean useBubbleSort = sorted.size() <= 10;
             
-            System.out.println("Selected Algorithm: " + (useBubbleSort ? "Bubble Sort" : "Insertion Sort"));
-            System.out.println("Reason: " + (useBubbleSort 
-                ? "Small dataset (≤10 records) - Bubble Sort suitable for demonstration" 
-                : "Larger dataset (>10 records) - Insertion Sort more efficient"));
+            System.out.println("\nAlgorithm selected: " + (useBubbleSort ? "Bubble Sort" : "Insertion Sort"));
+            System.out.println("Why? " + (useBubbleSort 
+                ? "Small dataset (≤10 records) - Bubble Sort is simple and effective" 
+                : "Larger dataset (>10 records) - Insertion Sort is more efficient"));
             
             // Determine the key extractor based on sortBy field
             java.util.function.Function<PrisonerModel, ? extends Comparable> keyExtractor;
@@ -182,23 +176,17 @@ public class SortOperation {
                 case "Name":
                     keyExtractor = p -> p.getName();
                     break;
-                    
                 case "Prisoner ID":
                     keyExtractor = p -> p.getPrisonerId();
                     break;
-                    
                 case "Admission Date":
                     keyExtractor = p -> p.getAdmissionDate();
                     break;
-                    
                 case "Sentence Duration":
-                    keyExtractor = p -> p.getSentenceDuration(); // Already an int (in months)
+                    keyExtractor = p -> p.getSentenceDuration();
                     break;
-                    
                 default:
-                    // Default to Prisoner ID
                     keyExtractor = p -> p.getPrisonerId();
-                    System.out.println("Unknown sort field, defaulting to Prisoner ID");
             }
             
             // Execute the appropriate sorting algorithm
@@ -212,21 +200,10 @@ public class SortOperation {
             
             long endTime = System.currentTimeMillis();
             
-            System.out.println("\n╔════════════════════════════════════════════════════════════╗");
-            System.out.println("║                    SORTING COMPLETED                        ║");
-            System.out.println("╚════════════════════════════════════════════════════════════╝");
-            System.out.println("Execution Time: " + (endTime - startTime) + " ms");
-            System.out.println("Final List Order: " + (ascending ? "Ascending" : "Descending") + " by " + sortBy);
-            
-            // Display first few results for verification
-            System.out.println("\nFirst 5 sorted results:");
-            for (int i = 0; i < Math.min(5, sorted.size()); i++) {
-                PrisonerModel p = sorted.get(i);
-                String keyValue = keyExtractor.apply(p).toString();
-                System.out.println("  " + (i + 1) + ". ID: " + p.getPrisonerId() + 
-                                 ", Name: " + p.getName() + 
-                                 ", Sort Key (" + sortBy + "): " + keyValue);
-            }
+            System.out.println("\n✓ Sorting complete!");
+            System.out.println("  Time taken: " + (endTime - startTime) + "ms");
+            System.out.println("  All " + sorted.size() + " records now sorted by " + sortBy + " (" + 
+                             (ascending ? "Ascending" : "Descending") + ")\n");
             
             // Show success message to user
             JOptionPane.showMessageDialog(null,
@@ -236,9 +213,6 @@ public class SortOperation {
                 JOptionPane.INFORMATION_MESSAGE);
             
         } catch (Exception e) {
-            System.err.println("\n[ERROR] Sorting failed: " + e.getMessage());
-            e.printStackTrace();
-            
             JOptionPane.showMessageDialog(null,
                 "Error during sorting: " + e.getMessage(),
                 "Sort Error",

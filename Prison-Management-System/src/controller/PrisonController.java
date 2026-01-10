@@ -295,8 +295,6 @@ public class PrisonController {
     // Your existing methods remain the same...
     public void prepareInitialData() {
         // Sample data already loaded in constructor via loadSampleNepalData()
-        // This method kept for backwards compatibility but does nothing
-        System.out.println("prepareInitialData() called - data already loaded in constructor");
     }
     
     public void loadPrisonerToTable(JTable prisonerTable) {
@@ -341,9 +339,7 @@ public class PrisonController {
      * Demonstrates variety in all fields including status and health
      */
     private void loadSampleNepalData() {
-        System.out.println("\n╔════════════════════════════════════════════════════════════╗");
-        System.out.println("║          LOADING SAMPLE NEPAL PRISONER DATA                ║");
-        System.out.println("╚════════════════════════════════════════════════════════════╝");
+        System.out.println("Loading sample prisoner data...");
         
         // Sample 1 - Active, Good Health
         addPrisoner("Ram Bahadur Thapa", 32, "Male", "Tinkune-15, Kathmandu",

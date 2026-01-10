@@ -73,7 +73,6 @@ public class ViewDetailsDialog extends JDialog {
             photoLabel.setText("Photo Not Found");
             photoLabel.setFont(new Font("Arial", Font.BOLD, 14));
             System.out.println("[ViewDetailsDialog] Exception loading photo: " + ex.getMessage()); // Debug
-            ex.printStackTrace();
         }
         
         photoPanel.add(photoLabel);

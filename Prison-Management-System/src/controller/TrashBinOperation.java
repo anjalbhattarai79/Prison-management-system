@@ -26,32 +26,9 @@ public class TrashBinOperation {
      * @param deletedPrisoner The prisoner to add to trash
      */
     public static void pushToTrash(Stack<PrisonerModel> trashBin, PrisonerModel deletedPrisoner) {
-        System.out.println("\n╔════════════════════════════════════════════════════════════╗");
-        System.out.println("║           TRASH BIN - PUSH OPERATION (STACK)              ║");
-        System.out.println("╚════════════════════════════════════════════════════════════╝");
-        System.out.println("Data Structure: Stack (LIFO - Last In First Out)");
-        
-        System.out.println("\n--- Before Push ---");
-        System.out.println("Stack size: " + trashBin.size());
-        
-        if (!trashBin.isEmpty()) {
-            PrisonerModel topPrisoner = trashBin.peek();
-            System.out.println("Current top of stack: " + topPrisoner.getName() + " (ID: " + topPrisoner.getPrisonerId() + ")");
-        } else {
-            System.out.println("Stack is empty");
-        }
-        
-        // Push operation
-        System.out.println("\n--- Pushing to Stack ---");
-        System.out.println("Pushing prisoner: " + deletedPrisoner.getName() + " (ID: " + deletedPrisoner.getPrisonerId() + ")");
         trashBin.push(deletedPrisoner);
-        
-        System.out.println("\n--- After Push ---");
-        System.out.println("Stack size: " + trashBin.size());
-        System.out.println("New top of stack: " + deletedPrisoner.getName() + " (ID: " + deletedPrisoner.getPrisonerId() + ")");
-        
-        System.out.println("\n✓ Successfully pushed to trash bin");
-        System.out.println("This prisoner can now be restored using pop operation");
+        System.out.println("\n[STACK] PUSH: " + deletedPrisoner.getName() + " → Moved to trash (Size: " + trashBin.size() + ")");
+        System.out.println("        (LIFO - Last In, First Out: This prisoner will be restored first)\n");
     }
     
     /**
@@ -63,13 +40,8 @@ public class TrashBinOperation {
      * @return The restored prisoner, or null if trash is empty
      */
     public static PrisonerModel popFromTrash(Stack<PrisonerModel> trashBin, LinkedList<PrisonerModel> prisonDetails) {
-        System.out.println("\n╔════════════════════════════════════════════════════════════╗");
-        System.out.println("║            TRASH BIN - POP OPERATION (STACK)              ║");
-        System.out.println("╚════════════════════════════════════════════════════════════╝");
-        
         // Check if trash is empty
         if (trashBin.isEmpty()) {
-            System.out.println("✗ Trash bin is empty - nothing to restore");
             JOptionPane.showMessageDialog(null,
                 "Trash bin is empty!\nNo prisoners to restore.",
                 "Trash Empty",
@@ -77,15 +49,8 @@ public class TrashBinOperation {
             return null;
         }
         
-        System.out.println("Stack size before pop: " + trashBin.size());
-        
         // Peek at top element before popping
         PrisonerModel topPrisoner = trashBin.peek();
-        System.out.println("\n--- Prisoner at Top of Stack ---");
-        System.out.println("ID: " + topPrisoner.getPrisonerId());
-        System.out.println("Name: " + topPrisoner.getName());
-        System.out.println("Crime: " + topPrisoner.getCrimeType());
-        System.out.println("Status: " + topPrisoner.getStatus());
         
         // Ask for confirmation
         int confirm = JOptionPane.showConfirmDialog(null,
@@ -99,42 +64,23 @@ public class TrashBinOperation {
             JOptionPane.QUESTION_MESSAGE);
         
         if (confirm != JOptionPane.YES_OPTION) {
-            System.out.println("✗ User cancelled restore operation");
             return null;
         }
         
         // Pop from stack
-        System.out.println("\n--- Popping from Stack ---");
         PrisonerModel restoredPrisoner = trashBin.pop();
-        System.out.println("✓ Popped: " + restoredPrisoner.getName() + " (ID: " + restoredPrisoner.getPrisonerId() + ")");
+        System.out.println("\n[STACK] POP: " + restoredPrisoner.getName() + " ← Restored from trash (Size: " + trashBin.size() + ")");
+        System.out.println("       (LIFO demonstrated: Most recently deleted prisoner restored first)\n");
         
         // Add back to main list
-        System.out.println("\n--- Restoring to Main List ---");
         prisonDetails.add(restoredPrisoner);
-        System.out.println("✓ Added back to LinkedList");
-        
-        System.out.println("\n--- After Pop ---");
-        System.out.println("Stack size: " + trashBin.size());
-        
-        if (!trashBin.isEmpty()) {
-            PrisonerModel newTop = trashBin.peek();
-            System.out.println("New top of stack: " + newTop.getName() + " (ID: " + newTop.getPrisonerId() + ")");
-        } else {
-            System.out.println("Stack is now empty");
-        }
-        
-        System.out.println("\n╔════════════════════════════════════════════════════════════╗");
-        System.out.println("║              RESTORE OPERATION SUCCESSFUL                  ║");
-        System.out.println("╚════════════════════════════════════════════════════════════╝");
-        System.out.println("Restored: " + restoredPrisoner.getName() + " (ID: " + restoredPrisoner.getPrisonerId() + ")");
-        System.out.println("Total prisoners in system: " + prisonDetails.size());
-        System.out.println("Prisoners remaining in trash: " + trashBin.size());
         
         JOptionPane.showMessageDialog(null,
             "Prisoner restored successfully!\n\n" +
             "Name: " + restoredPrisoner.getName() + "\n" +
-            "ID: " + restoredPrisoner.getPrisonerId(),
-            "Restore Success",
+            "ID: " + restoredPrisoner.getPrisonerId() + "\n\n" +
+            "They have been added back to the active prisoner list.",
+            "Restore Successful",
             JOptionPane.INFORMATION_MESSAGE);
         
         return restoredPrisoner;
@@ -148,20 +94,12 @@ public class TrashBinOperation {
      * @return HTML formatted string of trash contents
      */
     public static String viewTrashContents(Stack<PrisonerModel> trashBin) {
-        System.out.println("\n╔════════════════════════════════════════════════════════════╗");
-        System.out.println("║              TRASH BIN - VIEW CONTENTS                     ║");
-        System.out.println("╚════════════════════════════════════════════════════════════╝");
-        System.out.println("Stack size: " + trashBin.size());
-        
         if (trashBin.isEmpty()) {
-            System.out.println("Stack is empty");
             return "<html><b>Trash Bin (Stack):</b><br>No deleted prisoners</html>";
         }
         
         StringBuilder contents = new StringBuilder("<html><b>Trash Bin (Stack - LIFO):</b><br>");
         contents.append("<i>Most recent deletion at top</i><br><br>");
-        
-        System.out.println("\n--- Stack Contents (Top to Bottom) ---");
         
         // Iterate through stack (doesn't modify it)
         int position = trashBin.size();
@@ -174,16 +112,13 @@ public class TrashBinOperation {
                    .append(positionLabel)
                    .append("<br>");
             
-            System.out.println("  Position " + position + ": " + p.getName() + 
-                             " (ID: " + p.getPrisonerId() + ")" + positionLabel);
-            
             position--;
         }
         
         contents.append("<br><i>Total in trash: ").append(trashBin.size()).append("</i>");
         contents.append("</html>");
         
-        System.out.println("\nStack peek (top element): " + trashBin.peek().getName());
+        System.out.println("Trash contains " + trashBin.size() + " prisoner(s) [Top: " + trashBin.peek().getName() + "]");
         
         return contents.toString();
     }
@@ -215,12 +150,7 @@ public class TrashBinOperation {
      * @param trashBin Stack containing deleted prisoners
      */
     public static void emptyTrash(Stack<PrisonerModel> trashBin) {
-        System.out.println("\n╔════════════════════════════════════════════════════════════╗");
-        System.out.println("║          TRASH BIN - EMPTY OPERATION (CLEAR)              ║");
-        System.out.println("╚════════════════════════════════════════════════════════════╝");
-        
         if (trashBin.isEmpty()) {
-            System.out.println("Trash bin is already empty");
             JOptionPane.showMessageDialog(null,
                 "Trash bin is already empty!",
                 "Empty Trash",
@@ -229,7 +159,6 @@ public class TrashBinOperation {
         }
         
         int count = trashBin.size();
-        System.out.println("Prisoners in trash before clear: " + count);
         
         // Ask for confirmation
         int confirm = JOptionPane.showConfirmDialog(null,
@@ -241,20 +170,13 @@ public class TrashBinOperation {
             JOptionPane.WARNING_MESSAGE);
         
         if (confirm != JOptionPane.YES_OPTION) {
-            System.out.println("✗ User cancelled empty trash operation");
             return;
         }
         
         // Clear the stack
-        System.out.println("\n--- Clearing Stack ---");
         trashBin.clear();
-        System.out.println("✓ Stack cleared");
-        System.out.println("Stack size after clear: " + trashBin.size());
-        
-        System.out.println("\n╔════════════════════════════════════════════════════════════╗");
-        System.out.println("║            EMPTY TRASH OPERATION SUCCESSFUL                ║");
-        System.out.println("╚════════════════════════════════════════════════════════════╝");
-        System.out.println("Permanently deleted " + count + " prisoners");
+        System.out.println("\n[STACK] CLEAR: All " + count + " prisoner(s) permanently deleted");
+        System.out.println("        (Stack now empty - cannot restore any prisoners)\n");
         
         JOptionPane.showMessageDialog(null,
             "Trash bin emptied!\n" +
