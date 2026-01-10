@@ -8,13 +8,13 @@ import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
-import javax.swing.JOptionPane;
 import model.PrisonerModel;
 
 /**
  * CRUD - Contains all Create, Read, Update, Delete operations
+ * UI-agnostic business logic layer - no Swing dependencies
+ * Returns OperationResult for type-safe success/failure handling
  * Separates business logic from controller, following Single Responsibility Principle
- * Demonstrates clean architecture and separation of concerns
  * 
  * @author Anjal Bhattarai
  */
@@ -25,7 +25,8 @@ public class CRUD {
     
     /**
      * CREATE - Add a new prisoner to the system
-     * Includes comprehensive validation and queue management
+     * Returns OperationResult with success/failure status
+     * No UI dependencies - view layer handles user feedback
      * 
      * @param prisonDetails Main prisoner list
      * @param recentlyAddedQueue Queue tracking recent additions
@@ -41,9 +42,9 @@ public class CRUD {
      * @param prisonLocation Prison location
      * @param familyCode Family portal access code
      * @param status Prisoner status
-     * @return Array containing [success (Boolean), newNextId (Integer)]
+     * @return OperationResult with prisoner ID on success, error message on failure
      */
-    public static Object[] addPrisoner(LinkedList<PrisonerModel> prisonDetails,
+    public static OperationResult<Integer> addPrisoner(LinkedList<PrisonerModel> prisonDetails,
                                        Queue<PrisonerModel> recentlyAddedQueue,
                                        int nextPrisonerId,
                                        String name, int age, String gender, String address,
@@ -53,52 +54,52 @@ public class CRUD {
         try {
             // Validate name
             if (name == null || name.trim().isEmpty()) {
-                throw new IllegalArgumentException("Prisoner name cannot be empty");
+                return OperationResult.failure("Prisoner name cannot be empty");
             }
             
             if (!name.trim().matches("^[a-zA-Z\\s'-]+$")) {
-                throw new IllegalArgumentException("Name can only contain letters, spaces, hyphens, and apostrophes");
+                return OperationResult.failure("Name can only contain letters, spaces, hyphens, and apostrophes");
             }
             
             if (name.trim().length() > 100) {
-                throw new IllegalArgumentException("Name cannot exceed 100 characters");
+                return OperationResult.failure("Name cannot exceed 100 characters");
             }
             
             if (age <= 0 || age > 120) {
-                throw new IllegalArgumentException("Age must be between 1 and 120");
+                return OperationResult.failure("Age must be between 1 and 120");
             }
             
             if (gender == null || (!gender.equals("Male") && !gender.equals("Female") && !gender.equals("Other"))) {
-                throw new IllegalArgumentException("Gender must be Male, Female, or Other");
+                return OperationResult.failure("Gender must be Male, Female, or Other");
             }
             
             if (address == null || address.trim().isEmpty()) {
-                throw new IllegalArgumentException("Address cannot be empty");
+                return OperationResult.failure("Address cannot be empty");
             }
             if (address.trim().length() > 200) {
-                throw new IllegalArgumentException("Address cannot exceed 200 characters");
+                return OperationResult.failure("Address cannot exceed 200 characters");
             }
             
             if (crimeType == null || crimeType.trim().isEmpty()) {
-                throw new IllegalArgumentException("Crime type cannot be empty");
+                return OperationResult.failure("Crime type cannot be empty");
             }
             
             if (prisonLocation == null || prisonLocation.trim().isEmpty()) {
-                throw new IllegalArgumentException("Prison location cannot be empty");
+                return OperationResult.failure("Prison location cannot be empty");
             }
             
             if (sentenceDuration <= 0) {
-                throw new IllegalArgumentException("Sentence duration must be positive");
+                return OperationResult.failure("Sentence duration must be positive");
             }
             
             if (admissionDate.isAfter(LocalDate.now())) {
-                throw new IllegalArgumentException("Admission date cannot be in future");
+                return OperationResult.failure("Admission date cannot be in future");
             }
             
             // Check for duplicate names
             for (PrisonerModel p : prisonDetails) {
                 if (p.getName().equalsIgnoreCase(name.trim())) {
-                    throw new IllegalArgumentException("Prisoner with this name already exists");
+                    return OperationResult.failure("Prisoner with this name already exists");
                 }
             }
             
@@ -120,20 +121,13 @@ public class CRUD {
             }
             recentlyAddedQueue.offer(newPrisoner);
             
-            return new Object[]{true, prisonerId + 1};
+            System.out.println("[CRUD] Successfully added prisoner: " + name + " (ID: " + prisonerId + ")");
+            return OperationResult.success(prisonerId, 
+                "Prisoner added successfully!\nName: " + name + "\nID: " + prisonerId);
             
-        } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(null, 
-                "Validation Error: " + e.getMessage(), 
-                "Input Error", 
-                JOptionPane.ERROR_MESSAGE);
-            throw e;
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, 
-                "Error adding prisoner: " + e.getMessage(), 
-                "System Error", 
-                JOptionPane.ERROR_MESSAGE);
-            return new Object[]{false, nextPrisonerId};
+            System.err.println("[CRUD] Error adding prisoner: " + e.getMessage());
+            return OperationResult.failure("Error adding prisoner", e.getMessage());
         }
     }
     
@@ -151,8 +145,10 @@ public class CRUD {
     
     /**
      * UPDATE - Update existing prisoner information
+     * Returns OperationResult with success/failure status
+     * No UI dependencies - view layer handles user feedback
      */
-    public static boolean updatePrisoner(LinkedList<PrisonerModel> prisonDetails,
+    public static OperationResult<Boolean> updatePrisoner(LinkedList<PrisonerModel> prisonDetails,
                                          int prisonerId, String name, int age, String gender,
                                          String address, String crimeType, String crimeDescription,
                                          LocalDate admissionDate, int sentenceDuration,
@@ -161,58 +157,58 @@ public class CRUD {
             // Find prisoner
             PrisonerModel prisoner = getPrisonerById(prisonDetails, prisonerId);
             if (prisoner == null) {
-                throw new IllegalArgumentException("Prisoner with ID " + prisonerId + " not found");
+                return OperationResult.failure("Prisoner with ID " + prisonerId + " not found");
             }
             
             // Validate
             if (name == null || name.trim().isEmpty()) {
-                throw new IllegalArgumentException("Prisoner name cannot be empty");
+                return OperationResult.failure("Prisoner name cannot be empty");
             }
             
             if (!name.trim().matches("^[a-zA-Z\\s'-]+$")) {
-                throw new IllegalArgumentException("Name can only contain letters, spaces, hyphens, and apostrophes");
+                return OperationResult.failure("Name can only contain letters, spaces, hyphens, and apostrophes");
             }
             
             if (name.trim().length() > 100) {
-                throw new IllegalArgumentException("Name cannot exceed 100 characters");
+                return OperationResult.failure("Name cannot exceed 100 characters");
             }
             
             if (age <= 0 || age > 120) {
-                throw new IllegalArgumentException("Age must be between 1 and 120");
+                return OperationResult.failure("Age must be between 1 and 120");
             }
             
             if (gender == null || (!gender.equals("Male") && !gender.equals("Female") && !gender.equals("Other"))) {
-                throw new IllegalArgumentException("Gender must be Male, Female, or Other");
+                return OperationResult.failure("Gender must be Male, Female, or Other");
             }
             
             if (address == null || address.trim().isEmpty()) {
-                throw new IllegalArgumentException("Address cannot be empty");
+                return OperationResult.failure("Address cannot be empty");
             }
             if (address.trim().length() > 200) {
-                throw new IllegalArgumentException("Address cannot exceed 200 characters");
+                return OperationResult.failure("Address cannot exceed 200 characters");
             }
             
             if (crimeType == null || crimeType.trim().isEmpty()) {
-                throw new IllegalArgumentException("Crime type cannot be empty");
+                return OperationResult.failure("Crime type cannot be empty");
             }
             
             if (prisonLocation == null || prisonLocation.trim().isEmpty()) {
-                throw new IllegalArgumentException("Prison location cannot be empty");
+                return OperationResult.failure("Prison location cannot be empty");
             }
             
             if (sentenceDuration <= 0) {
-                throw new IllegalArgumentException("Sentence duration must be positive");
+                return OperationResult.failure("Sentence duration must be positive");
             }
             
             if (admissionDate.isAfter(LocalDate.now())) {
-                throw new IllegalArgumentException("Admission date cannot be in future");
+                return OperationResult.failure("Admission date cannot be in future");
             }
             
             // Check for duplicate names (excluding current prisoner)
             for (PrisonerModel p : prisonDetails) {
                 if (p.getPrisonerId() != prisonerId && 
                     p.getName().equalsIgnoreCase(name.trim())) {
-                    throw new IllegalArgumentException("Another prisoner with this name already exists");
+                    return OperationResult.failure("Another prisoner with this name already exists");
                 }
             }
             
@@ -229,49 +225,28 @@ public class CRUD {
             prisoner.setFamilyCode(familyCode);
             prisoner.setPhotoPath(photoPath);
             
-            return true;
+            System.out.println("[CRUD] Successfully updated prisoner: " + name + " (ID: " + prisonerId + ")");
+            return OperationResult.success(true, 
+                "Prisoner updated successfully!\nName: " + name + "\nID: " + prisonerId);
             
-        } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(null, 
-                "Update Error: " + e.getMessage(), 
-                "Input Error", 
-                JOptionPane.ERROR_MESSAGE);
-            throw e;
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, 
-                "Error updating prisoner: " + e.getMessage(), 
-                "System Error", 
-                JOptionPane.ERROR_MESSAGE);
-            return false;
+            System.err.println("[CRUD] Error updating prisoner: " + e.getMessage());
+            return OperationResult.failure("Error updating prisoner", e.getMessage());
         }
     }
     
     /**
      * DELETE - Remove prisoner from system and push to trash bin (Stack)
+     * Returns OperationResult with prisoner data on success
+     * View layer should confirm deletion before calling this method
      */
-    public static boolean deletePrisoner(LinkedList<PrisonerModel> prisonDetails, 
+    public static OperationResult<PrisonerModel> deletePrisoner(LinkedList<PrisonerModel> prisonDetails, 
                                          Stack<PrisonerModel> trashBin, 
                                          int prisonerId) {
         try {
             PrisonerModel prisoner = getPrisonerById(prisonDetails, prisonerId);
             if (prisoner == null) {
-                throw new IllegalArgumentException("Prisoner with ID " + prisonerId + " not found");
-            }
-            
-            // Confirm deletion
-            int confirm = JOptionPane.showConfirmDialog(null,
-                "Delete prisoner and move to Trash Bin?\n\n" +
-                "ID: " + prisoner.getPrisonerId() + "\n" +
-                "Name: " + prisoner.getName() + "\n" +
-                "Crime: " + prisoner.getCrimeType() + "\n\n" +
-                "Prisoner will be moved to Trash (Stack).\n" +
-                "You can restore them later using the Restore feature.",
-                "Confirm Deletion",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.WARNING_MESSAGE);
-            
-            if (confirm != JOptionPane.YES_OPTION) {
-                return false;
+                return OperationResult.failure("Prisoner with ID " + prisonerId + " not found");
             }
             
             // Remove from list
@@ -281,35 +256,22 @@ public class CRUD {
                 // Push to trash bin (Stack)
                 TrashBinOperation.pushToTrash(trashBin, prisoner);
                 
-                JOptionPane.showMessageDialog(null,
+                System.out.println("[CRUD] Prisoner moved to trash: " + prisoner.getName() + " (ID: " + prisonerId + ")");
+                return OperationResult.success(prisoner,
                     "Prisoner moved to Trash Bin!\n\n" +
                     "Name: " + prisoner.getName() + "\n" +
                     "ID: " + prisoner.getPrisonerId() + "\n\n" +
                     "Prisoners in trash: " + trashBin.size() + "\n" +
-                    "You can restore using the Restore button.",
-                    "Moved to Trash",
-                    JOptionPane.INFORMATION_MESSAGE);
+                    "You can restore using the Restore button.");
             } else {
-                System.err.println("✗ Failed to remove from list");
+                System.err.println("[CRUD] Failed to remove prisoner from list");
+                return OperationResult.failure("Failed to remove prisoner from list");
             }
             
-            return removed;
-            
-        } catch (IllegalArgumentException e) {
-            System.err.println("\n[DELETE OPERATION FAILED] " + e.getMessage());
-            JOptionPane.showMessageDialog(null, 
-                "Delete Error: " + e.getMessage(), 
-                "Error", 
-                JOptionPane.ERROR_MESSAGE);
-            return false;
         } catch (Exception e) {
-            System.err.println("\n[SYSTEM ERROR] " + e.getMessage());
+            System.err.println("[CRUD] Error deleting prisoner: " + e.getMessage());
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, 
-                "Error deleting prisoner: " + e.getMessage(), 
-                "System Error", 
-                JOptionPane.ERROR_MESSAGE);
-            return false;
+            return OperationResult.failure("Error deleting prisoner", e.getMessage());
         }
     }
     

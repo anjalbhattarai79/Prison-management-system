@@ -1,11 +1,11 @@
 package controller;
 
 import java.util.LinkedList;
-import javax.swing.JOptionPane;
 import model.PrisonerModel;
 
 /**
  * SearchOperation - Implements search algorithms for prisoner data
+ * UI-agnostic search algorithms - no Swing dependencies
  * Demonstrates Binary Search and Linear Search concepts
  * @author Anjal Bhattarai
  */
@@ -115,10 +115,7 @@ public class SearchOperation {
         LinkedList<PrisonerModel> results = new LinkedList<>();
         
         if (searchTerm == null || searchTerm.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(null,
-                "Please enter a search term",
-                "Search Error",
-                JOptionPane.WARNING_MESSAGE);
+            System.out.println("[Search] Empty search term provided");
             return results;
         }
         
@@ -130,13 +127,9 @@ public class SearchOperation {
                 PrisonerModel found = binarySearchById(prisonDetails, searchId);
                 if (found != null) {
                     results.add(found);
-                }
-                
-                if (results.isEmpty()) {
-                    JOptionPane.showMessageDialog(null,
-                        "No prisoner found with ID: " + searchId,
-                        "Search Result",
-                        JOptionPane.INFORMATION_MESSAGE);
+                    System.out.println("[Search] Found prisoner with ID: " + searchId);
+                } else {
+                    System.out.println("[Search] No prisoner found with ID: " + searchId);
                 }
                 
             } else if (searchType.contains("Linear Search")) {
@@ -144,23 +137,16 @@ public class SearchOperation {
                 results = linearSearchByNameOrCrime(prisonDetails, searchTerm);
                 
                 if (results.isEmpty()) {
-                    JOptionPane.showMessageDialog(null,
-                        "No prisoners found matching: \"" + searchTerm + "\"",
-                        "Search Result",
-                        JOptionPane.INFORMATION_MESSAGE);
+                    System.out.println("[Search] No prisoners found matching: \"" + searchTerm + "\"");
+                } else {
+                    System.out.println("[Search] Found " + results.size() + " prisoner(s) matching: \"" + searchTerm + "\"");
                 }
             }
             
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null,
-                "For ID search, please enter a numeric value",
-                "Invalid Input",
-                JOptionPane.ERROR_MESSAGE);
+            System.err.println("[Search] Invalid ID format: " + searchTerm);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null,
-                "Error during search: " + e.getMessage(),
-                "Search Error",
-                JOptionPane.ERROR_MESSAGE);
+            System.err.println("[Search] Search error: " + e.getMessage());
         }
         
         return results;

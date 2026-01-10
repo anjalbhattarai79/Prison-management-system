@@ -38,18 +38,17 @@ public class PrisonController {
                               String crimeType, String crimeDescription,
                               LocalDate admissionDate, int sentenceDuration,
                               String prisonLocation, String familyCode, String photoPath, String status) {
-        Object[] result = CRUD.addPrisoner(prisonDetails, recentlyAddedQueue, nextPrisonerId,
+        OperationResult<Integer> result = CRUD.addPrisoner(prisonDetails, recentlyAddedQueue, nextPrisonerId,
                                            name, age, gender, address, crimeType, crimeDescription,
                                            admissionDate, sentenceDuration, prisonLocation, familyCode, photoPath, status);
         
-        boolean success = (Boolean) result[0];
-        if (success) {
-            int newId = (Integer) result[1];
+        if (result.isSuccess()) {
+            int newId = result.getData();
             // Log activity
-            logActivity("ADDED", name, nextPrisonerId);
-            nextPrisonerId = newId; // Update next ID
+            logActivity("ADDED", name, newId);
+            nextPrisonerId = newId + 1; // Update next ID for next prisoner
         }
-        return success;
+        return result.isSuccess();
     }
     
     /**
@@ -92,13 +91,13 @@ public class PrisonController {
                                   String address, String crimeType, String crimeDescription,
                                   LocalDate admissionDate, int sentenceDuration,
                                   String prisonLocation, String familyCode, String photoPath) {
-        boolean success = CRUD.updatePrisoner(prisonDetails, prisonerId, name, age, gender,
+        OperationResult<Boolean> result = CRUD.updatePrisoner(prisonDetails, prisonerId, name, age, gender,
                                    address, crimeType, crimeDescription, admissionDate,
                                    sentenceDuration, prisonLocation, familyCode, photoPath);
-        if (success) {
+        if (result.isSuccess()) {
             logActivity("UPDATED", name, prisonerId);
         }
-        return success;
+        return result.isSuccess();
     }
     
     /**
@@ -107,12 +106,12 @@ public class PrisonController {
      * @return true if deletion successful, false otherwise
      */
     public boolean deletePrisoner(int prisonerId) {
-        PrisonerModel prisoner = getPrisonerById(prisonerId);
-        boolean success = CRUD.deletePrisoner(prisonDetails, trashBin, prisonerId);
-        if (success && prisoner != null) {
+        OperationResult<PrisonerModel> result = CRUD.deletePrisoner(prisonDetails, trashBin, prisonerId);
+        if (result.isSuccess()) {
+            PrisonerModel prisoner = result.getData();
             logActivity("DELETED", prisoner.getName(), prisonerId);
         }
-        return success;
+        return result.isSuccess();
     }
     
     /**
