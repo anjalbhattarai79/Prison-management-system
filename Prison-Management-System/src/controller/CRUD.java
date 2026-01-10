@@ -151,6 +151,7 @@ public class CRUD {
                 crimeDescription, admissionDate, sentenceDuration,
                 prisonLocation, familyCode, photoPath, status);
             System.out.println("✓ Prisoner object created");
+            System.out.println("  Photo path saved: " + photoPath);
             
             // ========== ADD TO MAIN LIST ==========
             System.out.println("\n--- Adding to Main List ---");

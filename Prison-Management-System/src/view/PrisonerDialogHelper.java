@@ -157,8 +157,50 @@ public class PrisonerDialogHelper {
         photoPreviewLabel.setPreferredSize(new Dimension(150, 150));
         photoPreviewLabel.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
         photoPreviewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        photoPreviewLabel.setText("No Photo");
-        String[] selectedPhotoPath = {"Prison-Management-System/images/default-prisoner.png"}; // Default photo
+        
+        // Automatically assign photo based on prisoner ID (cycle through 1.jpg to 5.jpg)
+        int photoNumber = ((nextId - 101) % 5) + 1; // Cycles: 1,2,3,4,5,1,2,3...
+        
+        // Build absolute path from working directory
+        String workingDir = System.getProperty("user.dir");
+        System.out.println("[AddPrisoner Dialog] Working directory: " + workingDir);
+        
+        // Construct the full absolute path
+        File photoFile = new File(workingDir, "Prison-Management-System/images/" + photoNumber + ".jpg");
+        
+        // If that doesn't exist, try without the Prison-Management-System prefix
+        if (!photoFile.exists()) {
+            photoFile = new File(workingDir, "images/" + photoNumber + ".jpg");
+        }
+        
+        // Convert to absolute path
+        String defaultPhoto = photoFile.getAbsolutePath();
+        String[] selectedPhotoPath = {defaultPhoto};
+        
+        System.out.println("[AddPrisoner Dialog] Trying photo path: " + defaultPhoto);
+        System.out.println("[AddPrisoner Dialog] Photo file exists: " + photoFile.exists());
+        
+        // Display default photo preview
+        try {
+            if (photoFile.exists()) {
+                ImageIcon defaultIcon = new ImageIcon(defaultPhoto);
+                if (defaultIcon.getIconWidth() > 0) {
+                    Image scaledImage = defaultIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+                    photoPreviewLabel.setIcon(new ImageIcon(scaledImage));
+                    photoPreviewLabel.setText("");
+                    System.out.println("[AddPrisoner Dialog] Photo preview loaded successfully");
+                } else {
+                    photoPreviewLabel.setText("Photo " + photoNumber);
+                    System.out.println("[AddPrisoner Dialog] Photo icon has invalid dimensions");
+                }
+            } else {
+                photoPreviewLabel.setText("Photo " + photoNumber);
+                System.out.println("[AddPrisoner Dialog] Photo file does not exist at: " + defaultPhoto);
+            }
+        } catch (Exception ex) {
+            photoPreviewLabel.setText("Photo " + photoNumber);
+            System.out.println("[AddPrisoner Dialog] Exception: " + ex.getMessage());
+        }
         
         JButton choosePhotoBtn = new JButton("Choose Photo");
         choosePhotoBtn.addActionListener(e -> {
@@ -291,6 +333,12 @@ public class PrisonerDialogHelper {
                 LocalDate admissionDate = utilDate.toInstant()
                     .atZone(java.time.ZoneId.systemDefault())
                     .toLocalDate();
+                
+                // Debug: Print photo path being used
+                System.out.println("[AddPrisoner] Using photo path: " + selectedPhotoPath[0]);
+                File photoFileCheck = new File(selectedPhotoPath[0]);
+                System.out.println("[AddPrisoner] Photo file exists: " + photoFileCheck.exists());
+                System.out.println("[AddPrisoner] Photo file absolute path: " + photoFileCheck.getAbsolutePath());
                 
                 boolean success = controller.addPrisoner(
                     name,

@@ -197,7 +197,7 @@ public class PrisonerModel {
         // Example usage
         PrisonerModel prisoner1 = new PrisonerModel(101, "John Doe", 35, "Male",
                 "123 Main St", "Robbery", "Bank robbery with weapons",
-                LocalDate.of(2023, 5, 15), 60, "Central Prison", "FAM12345");
+                LocalDate.of(2023, 5, 15), 60, "Central Prison", "FAM12345", "photos/john_doe.jpg");
         
         System.out.println("Prisoner Name: " + prisoner1.getName());
         System.out.println("Crime Type: " + prisoner1.getCrimeType());

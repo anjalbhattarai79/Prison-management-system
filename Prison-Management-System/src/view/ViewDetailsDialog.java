@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.*;
+import java.io.File;
 import javax.swing.*;
 import controller.PrisonController;
 import model.PrisonerModel;
@@ -46,18 +47,33 @@ public class ViewDetailsDialog extends JDialog {
         // Load and display photo
         try {
             String photoPath = prisoner.getPhotoPath();
+            System.out.println("[ViewDetailsDialog] Loading photo from: " + photoPath); // Debug
+            
             if (photoPath != null && !photoPath.isEmpty()) {
+                File photoFile = new File(photoPath);
+                System.out.println("[ViewDetailsDialog] Photo file exists: " + photoFile.exists()); // Debug
+                System.out.println("[ViewDetailsDialog] Photo file absolute path: " + photoFile.getAbsolutePath()); // Debug
+                
                 ImageIcon icon = new ImageIcon(photoPath);
-                Image scaledImage = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-                photoLabel.setIcon(new ImageIcon(scaledImage));
+                if (icon.getIconWidth() > 0 && icon.getIconHeight() > 0) {
+                    Image scaledImage = icon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+                    photoLabel.setIcon(new ImageIcon(scaledImage));
+                    System.out.println("[ViewDetailsDialog] Photo loaded successfully!"); // Debug
+                } else {
+                    photoLabel.setText("Photo Load Failed");
+                    photoLabel.setFont(new Font("Arial", Font.BOLD, 14));
+                    System.out.println("[ViewDetailsDialog] Photo icon has invalid dimensions"); // Debug
+                }
             } else {
                 photoLabel.setText("No Photo Available");
                 photoLabel.setFont(new Font("Arial", Font.BOLD, 14));
+                System.out.println("[ViewDetailsDialog] Photo path is null or empty"); // Debug
             }
         } catch (Exception ex) {
             photoLabel.setText("Photo Not Found");
             photoLabel.setFont(new Font("Arial", Font.BOLD, 14));
-            ex.printStackTrace(); // Debug: print error to console
+            System.out.println("[ViewDetailsDialog] Exception loading photo: " + ex.getMessage()); // Debug
+            ex.printStackTrace();
         }
         
         photoPanel.add(photoLabel);
