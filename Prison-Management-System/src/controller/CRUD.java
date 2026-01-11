@@ -6,8 +6,6 @@ package controller;
 
 import java.time.LocalDate;
 import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Stack;
 import model.PrisonerModel;
 
 /**
@@ -45,7 +43,7 @@ public class CRUD {
      * @return OperationResult with prisoner ID on success, error message on failure
      */
     public static OperationResult<Integer> addPrisoner(LinkedList<PrisonerModel> prisonDetails,
-                                       Queue<PrisonerModel> recentlyAddedQueue,
+                                       SimpleQueue<PrisonerModel> recentlyAddedQueue,
                                        int nextPrisonerId,
                                        String name, int age, String gender, String address,
                                        String crimeType, String crimeDescription,
@@ -117,9 +115,9 @@ public class CRUD {
             
             // Update recent queue
             if (recentlyAddedQueue.size() >= MAX_RECENT) {
-                recentlyAddedQueue.poll();
+                recentlyAddedQueue.dequeue();
             }
-            recentlyAddedQueue.offer(newPrisoner);
+            recentlyAddedQueue.enqueue(newPrisoner);
             
             System.out.println("[CRUD] Successfully added prisoner: " + name + " (ID: " + prisonerId + ")");
             return OperationResult.success(prisonerId, 
@@ -241,7 +239,7 @@ public class CRUD {
      * View layer should confirm deletion before calling this method
      */
     public static OperationResult<PrisonerModel> deletePrisoner(LinkedList<PrisonerModel> prisonDetails, 
-                                         Stack<PrisonerModel> trashBin, 
+                                         SimpleStack<PrisonerModel> trashBin, 
                                          int prisonerId) {
         try {
             PrisonerModel prisoner = getPrisonerById(prisonDetails, prisonerId);
@@ -253,7 +251,7 @@ public class CRUD {
             boolean removed = prisonDetails.remove(prisoner);
             
             if (removed) {
-                // Push to trash bin (Stack)
+                // Push to trash bin (custom stack)
                 TrashBinOperation.pushToTrash(trashBin, prisoner);
                 
                 System.out.println("[CRUD] Prisoner moved to trash: " + prisoner.getName() + " (ID: " + prisonerId + ")");
@@ -295,7 +293,7 @@ public class CRUD {
     /**
      * Helper: Get recent activities string for display
      */
-    public static String getRecentActivities(Queue<PrisonerModel> recentlyAddedQueue) {
+    public static String getRecentActivities(SimpleQueue<PrisonerModel> recentlyAddedQueue) {
         StringBuilder activities = new StringBuilder("<html><b>Recent Activities:</b><br>");
         
         if (recentlyAddedQueue.isEmpty()) {
@@ -304,7 +302,8 @@ public class CRUD {
             activities.append("• Login: Admin logged in<br>");
             activities.append("• View: Prisoner records loaded<br>");
         } else {
-            for (PrisonerModel p : recentlyAddedQueue) {
+            PrisonerModel[] arr = recentlyAddedQueue.toArray(new PrisonerModel[0]);
+            for (PrisonerModel p : arr) {
                 activities.append("• Added: ").append(p.getName())
                          .append(" (ID: ").append(p.getPrisonerId()).append(")<br>");
             }

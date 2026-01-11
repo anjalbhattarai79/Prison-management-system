@@ -1,10 +1,10 @@
 package view;
 
 import java.awt.*;
-import java.util.Stack;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import controller.PrisonController;
+import controller.SimpleStack;
 import model.PrisonerModel;
 
 /**
@@ -155,7 +155,7 @@ public class TrashBinDialog extends JDialog {
         // Clear existing rows
         tableModel.setRowCount(0);
         
-        Stack<PrisonerModel> trashBin = controller.getTrashBin();
+        SimpleStack<PrisonerModel> trashBin = controller.getTrashBin();
         int trashSize = trashBin.size();
         
         statusLabel.setText("Prisoners in trash: " + trashSize);

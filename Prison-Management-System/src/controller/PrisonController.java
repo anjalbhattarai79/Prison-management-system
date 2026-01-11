@@ -3,8 +3,6 @@ package controller;
 import java.io.File;
 import java.time.LocalDate;
 import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Stack;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -18,9 +16,9 @@ import model.VisitRequest;
 public class PrisonController {
     
     private LinkedList<PrisonerModel> prisonDetails = new LinkedList<>();
-    private Queue<PrisonerModel> recentlyAddedQueue = new LinkedList<>();
-    private Stack<PrisonerModel> trashBin = new Stack<>(); // Stack for deleted prisoners
-    private Queue<Activity> recentActivities = new LinkedList<>(); // Activity tracking
+    private SimpleQueue<PrisonerModel> recentlyAddedQueue = new SimpleQueue<>();
+    private SimpleStack<PrisonerModel> trashBin = new SimpleStack<>(); // Custom Stack for deleted prisoners
+    private SimpleQueue<Activity> recentActivities = new SimpleQueue<>(); // Activity tracking
     private LinkedList<VisitRequest> visitRequests = new LinkedList<>(); // Visit requests
     private static final int MAX_ACTIVITIES = 10; // Maximum activities to track
     private int nextPrisonerId = 101; // Start at 101
@@ -110,8 +108,15 @@ public class PrisonController {
         if (result.isSuccess()) {
             PrisonerModel prisoner = result.getData();
             logActivity("DELETED", prisoner.getName(), prisonerId);
+            return true;
+        } else {
+            // Show overflow or other error details to the user
+            JOptionPane.showMessageDialog(null,
+                result.getFullErrorMessage(),
+                "Delete Failed",
+                JOptionPane.ERROR_MESSAGE);
+            return false;
         }
-        return result.isSuccess();
     }
     
     /**
@@ -160,7 +165,7 @@ public class PrisonController {
      * Get the trash bin Stack for viewing
      * @return Stack of deleted prisoners
      */
-    public Stack<PrisonerModel> getTrashBin() {
+    public SimpleStack<PrisonerModel> getTrashBin() {
         return trashBin;
     }
     
@@ -169,11 +174,11 @@ public class PrisonController {
      */
     private void logActivity(String action, String prisonerName, int prisonerId) {
         Activity activity = new Activity(action, prisonerName, prisonerId);
-        recentActivities.offer(activity);
+        recentActivities.enqueue(activity);
         
         // Keep only last MAX_ACTIVITIES
         while (recentActivities.size() > MAX_ACTIVITIES) {
-            recentActivities.poll();
+            recentActivities.dequeue();
         }
         
         System.out.println("[ACTIVITY LOGGED] " + activity.toString());
@@ -183,7 +188,7 @@ public class PrisonController {
      * Get recent activities queue
      * @return Queue of recent activities
      */
-    public Queue<Activity> getRecentActivitiesQueue() {
+    public SimpleQueue<Activity> getRecentActivitiesQueue() {
         return recentActivities;
     }
     
@@ -250,6 +255,16 @@ public class PrisonController {
      */
     public LinkedList<PrisonerModel> sortPrisoners(String sortBy, boolean ascending) {
         return SortOperation.sortPrisoners(prisonDetails, sortBy, ascending);
+    }
+
+    /**
+     * SORT (explicit algorithm) - Sort by field and order using chosen algorithm
+     * @param sortBy Field to sort
+     * @param ascending Asc/Desc order
+     * @param algorithm One of: InsertionSort, SelectionSort, MergeSort
+     */
+    public LinkedList<PrisonerModel> sortPrisoners(String sortBy, boolean ascending, String algorithm) {
+        return SortOperation.sortPrisoners(prisonDetails, sortBy, ascending, algorithm);
     }
     
     /**

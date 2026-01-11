@@ -5,7 +5,6 @@
 package controller;
 
 import java.util.LinkedList;
-import java.util.Stack;
 import javax.swing.JOptionPane;
 import model.PrisonerModel;
 
@@ -25,7 +24,7 @@ public class TrashBinOperation {
      * @param trashBin Stack containing deleted prisoners
      * @param deletedPrisoner The prisoner to add to trash
      */
-    public static void pushToTrash(Stack<PrisonerModel> trashBin, PrisonerModel deletedPrisoner) {
+    public static void pushToTrash(SimpleStack<PrisonerModel> trashBin, PrisonerModel deletedPrisoner) {
         trashBin.push(deletedPrisoner);
         System.out.println("\n[STACK] PUSH: " + deletedPrisoner.getName() + " → Moved to trash (Size: " + trashBin.size() + ")");
         System.out.println("        (LIFO - Last In, First Out: This prisoner will be restored first)\n");
@@ -39,7 +38,7 @@ public class TrashBinOperation {
      * @param prisonDetails Main list to restore prisoner to
      * @return The restored prisoner, or null if trash is empty
      */
-    public static PrisonerModel popFromTrash(Stack<PrisonerModel> trashBin, LinkedList<PrisonerModel> prisonDetails) {
+    public static PrisonerModel popFromTrash(SimpleStack<PrisonerModel> trashBin, LinkedList<PrisonerModel> prisonDetails) {
         // Check if trash is empty
         if (trashBin.isEmpty()) {
             JOptionPane.showMessageDialog(null,
@@ -93,7 +92,7 @@ public class TrashBinOperation {
      * @param trashBin Stack containing deleted prisoners
      * @return HTML formatted string of trash contents
      */
-    public static String viewTrashContents(Stack<PrisonerModel> trashBin) {
+    public static String viewTrashContents(SimpleStack<PrisonerModel> trashBin) {
         if (trashBin.isEmpty()) {
             return "<html><b>Trash Bin (Stack):</b><br>No deleted prisoners</html>";
         }
@@ -101,9 +100,10 @@ public class TrashBinOperation {
         StringBuilder contents = new StringBuilder("<html><b>Trash Bin (Stack - LIFO):</b><br>");
         contents.append("<i>Most recent deletion at top</i><br><br>");
         
-        // Iterate through stack (doesn't modify it)
+        // Iterate through stack via array (keeps it simple)
         int position = trashBin.size();
-        for (PrisonerModel p : trashBin) {
+        PrisonerModel[] arr = trashBin.toArray(new PrisonerModel[0]);
+        for (PrisonerModel p : arr) {
             String positionLabel = (position == trashBin.size()) ? " ← TOP" : "";
             
             contents.append(position).append(". ")
@@ -118,7 +118,8 @@ public class TrashBinOperation {
         contents.append("<br><i>Total in trash: ").append(trashBin.size()).append("</i>");
         contents.append("</html>");
         
-        System.out.println("Trash contains " + trashBin.size() + " prisoner(s) [Top: " + trashBin.peek().getName() + "]");
+        PrisonerModel top = trashBin.peek();
+        System.out.println("Trash contains " + trashBin.size() + " prisoner(s) [Top: " + (top != null ? top.getName() : "None") + "]");
         
         return contents.toString();
     }
@@ -129,7 +130,7 @@ public class TrashBinOperation {
      * @param trashBin Stack containing deleted prisoners
      * @return Number of prisoners in trash
      */
-    public static int getTrashSize(Stack<PrisonerModel> trashBin) {
+    public static int getTrashSize(SimpleStack<PrisonerModel> trashBin) {
         return trashBin.size();
     }
     
@@ -139,7 +140,7 @@ public class TrashBinOperation {
      * @param trashBin Stack containing deleted prisoners
      * @return true if trash is empty
      */
-    public static boolean isTrashEmpty(Stack<PrisonerModel> trashBin) {
+    public static boolean isTrashEmpty(SimpleStack<PrisonerModel> trashBin) {
         return trashBin.isEmpty();
     }
     
@@ -149,7 +150,7 @@ public class TrashBinOperation {
      * 
      * @param trashBin Stack containing deleted prisoners
      */
-    public static void emptyTrash(Stack<PrisonerModel> trashBin) {
+    public static void emptyTrash(SimpleStack<PrisonerModel> trashBin) {
         if (trashBin.isEmpty()) {
             JOptionPane.showMessageDialog(null,
                 "Trash bin is already empty!",

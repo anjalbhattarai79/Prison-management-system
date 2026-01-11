@@ -5,6 +5,7 @@
 package controller;
 
 import java.util.LinkedList;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import model.PrisonerModel;
 
@@ -18,119 +19,108 @@ import model.PrisonerModel;
 public class SortOperation {
     
     /**
-     * Bubble Sort Algorithm
-     * Time Complexity: O(n²)
-     * Space Complexity: O(1)
-     * Stable: Yes
-     * 
-     * Repeatedly steps through the list, compares adjacent elements and swaps them if they are in wrong order.
-     * The pass through the list is repeated until the list is sorted.
+     * Compare two prisoners based on sortBy and order.
      */
-    private static <T extends Comparable<T>> void bubbleSort(LinkedList<PrisonerModel> list, 
-            java.util.function.Function<PrisonerModel, T> keyExtractor, boolean ascending) {
-        
-        int n = list.size();
-        int totalComparisons = 0;
-        int totalSwaps = 0;
-        
-        System.out.println("\nBubble Sort - Step-by-step execution:");
-        
-        for (int i = 0; i < n - 1; i++) {
-            boolean swapped = false;
-            int passSwaps = 0;
-            
-            System.out.println("  Pass " + (i + 1) + ": Comparing adjacent elements...");
-            
-            for (int j = 0; j < n - i - 1; j++) {
-                PrisonerModel current = list.get(j);
-                PrisonerModel next = list.get(j + 1);
-                
-                T currentKey = keyExtractor.apply(current);
-                T nextKey = keyExtractor.apply(next);
-                
-                totalComparisons++;
-                int comparison = currentKey.compareTo(nextKey);
-                
-                boolean shouldSwap = ascending ? comparison > 0 : comparison < 0;
-                
-                if (shouldSwap) {
-                    list.set(j, next);
-                    list.set(j + 1, current);
-                    swapped = true;
-                    totalSwaps++;
-                    passSwaps++;
-                }
-            }
-            
-            System.out.println("     → " + passSwaps + " swap(s) made. Largest element \"bubbled\" to position " + (n - i - 1));
-            
-            if (!swapped) {
-                System.out.println("     → No swaps needed - list is sorted!");
+    private static int comparePrisoners(PrisonerModel a, PrisonerModel b, String sortBy, boolean ascending) {
+        int c;
+        switch (sortBy) {
+            case "Name":
+                c = a.getName().compareToIgnoreCase(b.getName());
+                break;
+            case "Prisoner ID":
+            case "ID":
+                c = Integer.compare(a.getPrisonerId(), b.getPrisonerId());
+                break;
+            case "Age":
+                c = Integer.compare(a.getAge(), b.getAge());
+                break;
+            case "Admission Date":
+                c = a.getAdmissionDate().compareTo(b.getAdmissionDate());
+                break;
+            case "Release Date": {
+                java.time.LocalDate ra = a.getReleaseDate();
+                java.time.LocalDate rb = b.getReleaseDate();
+                if (ra == null && rb == null) c = 0;
+                else if (ra == null) c = 1; // nulls last in ascending
+                else if (rb == null) c = -1;
+                else c = ra.compareTo(rb);
                 break;
             }
+            case "Sentence Duration":
+                c = Integer.compare(a.getSentenceDuration(), b.getSentenceDuration());
+                break;
+            default:
+                c = Integer.compare(a.getPrisonerId(), b.getPrisonerId());
         }
-        
-        System.out.println("\n  ✓ Bubble Sort completed: " + totalComparisons + " comparisons, " + totalSwaps + " total swaps");
-        System.out.println("     (Each pass moves the largest unsorted element to its final position)");
+        return ascending ? c : -c;
     }
-    
-    /**
-     * Insertion Sort Algorithm
-     * Time Complexity: O(n²)
-     * Space Complexity: O(1)
-     * Stable: Yes
-     * 
-     * Builds the final sorted list one item at a time.
-     * Takes each element and inserts it into its correct position in the sorted portion.
-     */
-    private static <T extends Comparable<T>> void insertionSort(LinkedList<PrisonerModel> list, 
-            java.util.function.Function<PrisonerModel, T> keyExtractor, boolean ascending) {
-        
+
+    /** Selection Sort (simple, O(n^2)) */
+    private static void selectionSort(LinkedList<PrisonerModel> list, String sortBy, boolean ascending) {
         int n = list.size();
-        int totalComparisons = 0;
-        int totalInsertions = 0;
-        
-        System.out.println("\nInsertion Sort - Step-by-step execution:");
-        System.out.println("  (Building sorted portion from left to right)\n");
-        
-        for (int i = 1; i < n; i++) {
-            PrisonerModel key = list.get(i);
-            T keyValue = keyExtractor.apply(key);
-            int originalPos = i;
-            int j = i - 1;
-            
-            System.out.println("  Step " + i + ": Inserting element at position " + i + " (value: " + keyValue + ")");
-            
-            while (j >= 0) {
-                PrisonerModel compared = list.get(j);
-                T comparedValue = keyExtractor.apply(compared);
-                
-                totalComparisons++;
-                int comparison = keyValue.compareTo(comparedValue);
-                
-                boolean shouldMove = ascending ? comparison < 0 : comparison > 0;
-                
-                if (shouldMove) {
-                    list.set(j + 1, compared);
-                    j--;
-                } else {
-                    break;
+        System.out.println("\nSelection Sort: " + n + " records");
+        for (int i = 0; i < n - 1; i++) {
+            int best = i;
+            for (int j = i + 1; j < n; j++) {
+                if (comparePrisoners(list.get(j), list.get(best), sortBy, ascending) < 0) {
+                    best = j;
                 }
             }
-            
-            int finalPos = j + 1;
-            if (finalPos != i) {
-                list.set(finalPos, key);
-                totalInsertions++;
-                System.out.println("     → Inserted at position " + finalPos + " (moved from " + originalPos + ")");
-            } else {
-                System.out.println("     → Already in correct position " + finalPos);
+            if (best != i) {
+                PrisonerModel tmp = list.get(i);
+                list.set(i, list.get(best));
+                list.set(best, tmp);
             }
         }
-        
-        System.out.println("\n  ✓ Insertion Sort completed: " + totalComparisons + " comparisons, " + totalInsertions + " insertions");
-        System.out.println("     (Each element inserted into its correct position in the sorted portion)");
+        System.out.println("✓ Selection Sort complete");
     }
+
+    /** Insertion Sort (stable, O(n^2)) */
+    private static void insertionSort(LinkedList<PrisonerModel> list, String sortBy, boolean ascending) {
+        int n = list.size();
+        System.out.println("\nInsertion Sort: " + n + " records");
+        for (int i = 1; i < n; i++) {
+            PrisonerModel key = list.get(i);
+            int j = i - 1;
+            while (j >= 0 && comparePrisoners(key, list.get(j), sortBy, ascending) < 0) {
+                list.set(j + 1, list.get(j));
+                j--;
+            }
+            list.set(j + 1, key);
+        }
+        System.out.println("✓ Insertion Sort complete");
+    }
+
+    /** Merge Sort (stable, O(n log n)) */
+    private static void mergeSort(LinkedList<PrisonerModel> list, String sortBy, boolean ascending) {
+        int n = list.size();
+        if (n <= 1) return;
+        int mid = n / 2;
+        ArrayList<PrisonerModel> leftArr = new ArrayList<>(list.subList(0, mid));
+        ArrayList<PrisonerModel> rightArr = new ArrayList<>(list.subList(mid, n));
+        LinkedList<PrisonerModel> left = new LinkedList<>(leftArr);
+        LinkedList<PrisonerModel> right = new LinkedList<>(rightArr);
+        mergeSort(left, sortBy, ascending);
+        mergeSort(right, sortBy, ascending);
+        // Merge back into list
+        list.clear();
+        int i = 0, j = 0;
+        while (i < left.size() && j < right.size()) {
+            PrisonerModel a = left.get(i);
+            PrisonerModel b = right.get(j);
+            if (comparePrisoners(a, b, sortBy, ascending) <= 0) {
+                list.add(a);
+                i++;
+            } else {
+                list.add(b);
+                j++;
+            }
+        }
+        while (i < left.size()) { list.add(left.get(i++)); }
+        while (j < right.size()) { list.add(right.get(j++)); }
+    }
+    
+    // (Legacy verbose insertion sort removed to simplify coursework scope)
     
     /**
      * Main sorting method - Entry point for all sorting operations
@@ -143,8 +133,21 @@ public class SortOperation {
      */
     public static LinkedList<PrisonerModel> sortPrisoners(LinkedList<PrisonerModel> prisonDetails, 
             String sortBy, boolean ascending) {
-        
-        // Validation
+        return sortInternal(prisonDetails, sortBy, ascending, null);
+    }
+
+    /**
+     * Overload: Sort with explicit algorithm selection from UI.
+     * algorithm: "InsertionSort", "SelectionSort", "MergeSort"
+     */
+    public static LinkedList<PrisonerModel> sortPrisoners(LinkedList<PrisonerModel> prisonDetails,
+            String sortBy, boolean ascending, String algorithm) {
+        return sortInternal(prisonDetails, sortBy, ascending, algorithm);
+    }
+
+    /** Internal: single implementation for sorting with optional explicit algorithm. */
+    private static LinkedList<PrisonerModel> sortInternal(LinkedList<PrisonerModel> prisonDetails,
+            String sortBy, boolean ascending, String algorithm) {
         if (prisonDetails == null || prisonDetails.isEmpty()) {
             JOptionPane.showMessageDialog(null,
                 "No prisoner data available to sort.",
@@ -152,75 +155,47 @@ public class SortOperation {
                 JOptionPane.WARNING_MESSAGE);
             return new LinkedList<>();
         }
-        
-        // Create a copy to avoid modifying original list
+
         LinkedList<PrisonerModel> sorted = new LinkedList<>(prisonDetails);
-        
         try {
             System.out.println("\n=== Sorting Prisoners ===");
             System.out.println("Sorting " + sorted.size() + " records by: " + sortBy);
             System.out.println("Order: " + (ascending ? "Ascending (smallest first)" : "Descending (largest first)"));
-            
-            // Choose sorting algorithm based on list size
-            boolean useBubbleSort = sorted.size() <= 10;
-            
-            System.out.println("\nAlgorithm selected: " + (useBubbleSort ? "Bubble Sort" : "Insertion Sort"));
-            System.out.println("Why? " + (useBubbleSort 
-                ? "Small dataset (≤10 records) - Bubble Sort is simple and effective" 
-                : "Larger dataset (>10 records) - Insertion Sort is more efficient"));
-            
-            // Determine the key extractor based on sortBy field
-            java.util.function.Function<PrisonerModel, ? extends Comparable> keyExtractor;
-            
-            switch (sortBy) {
-                case "Name":
-                    keyExtractor = p -> p.getName();
-                    break;
-                case "Prisoner ID":
-                    keyExtractor = p -> p.getPrisonerId();
-                    break;
-                case "Admission Date":
-                    keyExtractor = p -> p.getAdmissionDate();
-                    break;
-                case "Sentence Duration":
-                    keyExtractor = p -> p.getSentenceDuration();
-                    break;
-                default:
-                    keyExtractor = p -> p.getPrisonerId();
-            }
-            
-            // Execute the appropriate sorting algorithm
-            long startTime = System.currentTimeMillis();
-            
-            if (useBubbleSort) {
-                bubbleSort(sorted, (java.util.function.Function<PrisonerModel, Comparable>) keyExtractor, ascending);
+
+            String algo;
+            if (algorithm == null || algorithm.isEmpty()) {
+                int n = sorted.size();
+                algo = (n <= 10) ? "Insertion" : (n <= 100) ? "Selection" : "Merge";
             } else {
-                insertionSort(sorted, (java.util.function.Function<PrisonerModel, Comparable>) keyExtractor, ascending);
+                if ("InsertionSort".equalsIgnoreCase(algorithm) || "Insertion".equalsIgnoreCase(algorithm)) algo = "Insertion";
+                else if ("SelectionSort".equalsIgnoreCase(algorithm) || "Selection".equalsIgnoreCase(algorithm)) algo = "Selection";
+                else algo = "Merge";
             }
-            
+
+            System.out.println("\nAlgorithm selected: " + algo + " Sort");
+            long startTime = System.currentTimeMillis();
+            if ("Insertion".equals(algo)) insertionSort(sorted, sortBy, ascending);
+            else if ("Selection".equals(algo)) selectionSort(sorted, sortBy, ascending);
+            else mergeSort(sorted, sortBy, ascending);
+
             long endTime = System.currentTimeMillis();
-            
             System.out.println("\n✓ Sorting complete!");
             System.out.println("  Time taken: " + (endTime - startTime) + "ms");
             System.out.println("  All " + sorted.size() + " records now sorted by " + sortBy + " (" + 
                              (ascending ? "Ascending" : "Descending") + ")\n");
-            
-            // Show success message to user
+
             JOptionPane.showMessageDialog(null,
-                "Successfully sorted " + sorted.size() + " prisoners by " + sortBy + 
+                "Successfully sorted " + sorted.size() + " prisoners by " + sortBy +
                 "\n(" + (ascending ? "Ascending" : "Descending") + " order)",
                 "Sort Successful",
                 JOptionPane.INFORMATION_MESSAGE);
-            
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null,
                 "Error during sorting: " + e.getMessage(),
                 "Sort Error",
                 JOptionPane.ERROR_MESSAGE);
-            
-            return new LinkedList<>(prisonDetails); // Return original list on error
+            return new LinkedList<>(prisonDetails);
         }
-        
         return sorted;
     }
 }
