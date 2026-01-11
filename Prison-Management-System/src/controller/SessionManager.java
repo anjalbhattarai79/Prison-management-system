@@ -13,7 +13,7 @@ package controller;
  * 
  * @author Anjal Bhattarai
  */
-public class SessionManager implements ISessionManager {
+public class SessionManager {
     
     private boolean adminLoggedIn;
     private boolean familyLoggedIn;
@@ -26,22 +26,18 @@ public class SessionManager implements ISessionManager {
         clearSession();
     }
     
-    @Override
     public boolean isAdminLoggedIn() {
         return adminLoggedIn;
     }
     
-    @Override
     public boolean isFamilyLoggedIn() {
         return familyLoggedIn;
     }
     
-    @Override
     public int getCurrentFamilyPrisonerId() {
         return currentFamilyPrisonerId;
     }
     
-    @Override
     public void setAdminLoggedIn(boolean loggedIn) {
         this.adminLoggedIn = loggedIn;
         if (loggedIn) {
@@ -52,7 +48,6 @@ public class SessionManager implements ISessionManager {
         System.out.println("[SessionManager] Admin login status: " + loggedIn);
     }
     
-    @Override
     public void setFamilyLoggedIn(boolean loggedIn, int prisonerId) {
         this.familyLoggedIn = loggedIn;
         this.currentFamilyPrisonerId = loggedIn ? prisonerId : 0;
@@ -64,7 +59,6 @@ public class SessionManager implements ISessionManager {
                          (loggedIn ? " (Prisoner ID: " + prisonerId + ")" : ""));
     }
     
-    @Override
     public void clearSession() {
         this.adminLoggedIn = false;
         this.familyLoggedIn = false;
@@ -72,7 +66,6 @@ public class SessionManager implements ISessionManager {
         System.out.println("[SessionManager] Session cleared");
     }
     
-    @Override
     public String getSessionType() {
         if (adminLoggedIn) {
             return "ADMIN";

@@ -6,28 +6,28 @@ import java.util.ArrayList;
  * SimpleQueue - minimal FIFO queue built on ArrayList with a head index.
  * Enqueue: append; Dequeue: advance head; Compact occasionally to avoid growth.
  */
-public class SimpleQueue<T> {
-    private final ArrayList<T> items = new ArrayList<>();
+public class SimpleQueue {
+    private final ArrayList<Object> items = new ArrayList<>();
     private int head = 0; // front index
     private int rear = -1; // rear index (last valid element)
 
-    public void enqueue(T item) {
+    public void enqueue(Object item) {
         items.add(item);
         rear = items.size() - 1; // update rear on enqueue
     }
 
-    public T dequeue() {
+    public Object dequeue() {
         if (isEmpty()) {
             throw new IllegalStateException("Queue is empty");
         }
-        T value = items.get(head);
+        Object value = items.get(head);
         head++;
         resetIfEmpty();
         compactIfNeeded();
         return value;
     }
 
-    public T peek() {
+    public Object peek() {
         if (isEmpty()) {
             return null;
         }
@@ -35,12 +35,12 @@ public class SimpleQueue<T> {
     }
 
     /** Alias for clarity: front element (same as peek). */
-    public T front() {
+    public Object front() {
         return peek();
     }
 
     /** Rear element without removal. */
-    public T rear() {
+    public Object rear() {
         if (isEmpty()) {
             return null;
         }
@@ -62,13 +62,22 @@ public class SimpleQueue<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public T[] toArray(T[] a) {
+    public <U> U[] toArray(U[] a) {
         int n = size();
-        ArrayList<T> slice = new ArrayList<>(n);
+        ArrayList<Object> slice = new ArrayList<>(n);
         for (int i = 0; i < n; i++) {
             slice.add(items.get(head + i));
         }
-        return slice.toArray(a);
+        U[] out = a;
+        if (a.length < n) {
+            Class<?> component = a.getClass().getComponentType();
+            out = (U[]) java.lang.reflect.Array.newInstance(component, n);
+        }
+        for (int i = 0; i < n; i++) {
+            out[i] = (U) slice.get(i);
+        }
+        if (out.length > n) out[n] = null;
+        return out;
     }
 
     // Compact underlying storage when head crosses a threshold
@@ -76,7 +85,7 @@ public class SimpleQueue<T> {
         int n = items.size();
         // Compact when head is at least 64 and at least half of the array is consumed
         if (head >= 64 && head * 2 >= n) {
-            ArrayList<T> compacted = new ArrayList<>(n - head);
+            ArrayList<Object> compacted = new ArrayList<>(n - head);
             for (int i = head; i < n; i++) {
                 compacted.add(items.get(i));
             }

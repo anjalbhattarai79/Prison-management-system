@@ -5,8 +5,6 @@
 package view;
 
 import java.awt.Color;
-import java.awt.Cursor;
-import java.time.LocalDate;
 import java.util.LinkedList;
 import javax.swing.*;
 import javax.swing.table.*;

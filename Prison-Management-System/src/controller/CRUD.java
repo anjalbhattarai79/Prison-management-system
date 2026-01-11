@@ -43,7 +43,7 @@ public class CRUD {
      * @return OperationResult with prisoner ID on success, error message on failure
      */
     public static OperationResult<Integer> addPrisoner(LinkedList<PrisonerModel> prisonDetails,
-                                       SimpleQueue<PrisonerModel> recentlyAddedQueue,
+                                       SimpleQueue recentlyAddedQueue,
                                        int nextPrisonerId,
                                        String name, int age, String gender, String address,
                                        String crimeType, String crimeDescription,
@@ -239,7 +239,7 @@ public class CRUD {
      * View layer should confirm deletion before calling this method
      */
     public static OperationResult<PrisonerModel> deletePrisoner(LinkedList<PrisonerModel> prisonDetails, 
-                                         SimpleStack<PrisonerModel> trashBin, 
+                                         SimpleStack trashBin, 
                                          int prisonerId) {
         try {
             PrisonerModel prisoner = getPrisonerById(prisonDetails, prisonerId);
@@ -293,7 +293,7 @@ public class CRUD {
     /**
      * Helper: Get recent activities string for display
      */
-    public static String getRecentActivities(SimpleQueue<PrisonerModel> recentlyAddedQueue) {
+    public static String getRecentActivities(SimpleQueue recentlyAddedQueue) {
         StringBuilder activities = new StringBuilder("<html><b>Recent Activities:</b><br>");
         
         if (recentlyAddedQueue.isEmpty()) {

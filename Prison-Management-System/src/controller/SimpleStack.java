@@ -1,15 +1,15 @@
 package controller;
 
 /**
- * SimpleStack - lightweight generic LIFO stack implementation using a fixed array.
+ * SimpleStack - simple LIFO stack using a fixed array.
  * Demonstrates explicit overflow (max size reached) and underflow (empty stack).
  */
-public class SimpleStack<T> {
+public class SimpleStack {
     private static final int MAX_SIZE = 5; // required max size per spec
     private final Object[] elements = new Object[MAX_SIZE];
     private int top = -1; // -1 when empty
 
-    public void push(T item) {
+    public void push(Object item) {
         if (top == MAX_SIZE - 1) {
             throw new IllegalStateException("Stack overflow");
         }
@@ -17,27 +17,25 @@ public class SimpleStack<T> {
         elements[top] = item;
     }
 
-    @SuppressWarnings("unchecked")
-    public T pop() {
+    public Object pop() {
         if (top == -1) {
             throw new IllegalStateException("Stack underflow");
         }
-        T removed = (T) elements[top];
+        Object removed = elements[top];
         elements[top] = null;
         top--;
         return removed;
     }
 
-    @SuppressWarnings("unchecked")
-    public T peek() {
+    public Object peek() {
         if (top == -1) {
             return null;
         }
-        return (T) elements[top];
+        return elements[top];
     }
 
     /** Alias for clarity: top of the stack (same as peek). */
-    public T top() {
+    public Object top() {
         return peek();
     }
 
@@ -61,18 +59,18 @@ public class SimpleStack<T> {
      * The last element of the returned array represents the top.
      */
     @SuppressWarnings("unchecked")
-    public T[] toArray(T[] a) {
+    public <U> U[] toArray(U[] a) {
         int n = size();
         if (a.length < n) {
             Class<?> component = a.getClass().getComponentType();
-            T[] r = (T[]) java.lang.reflect.Array.newInstance(component, n);
+            U[] r = (U[]) java.lang.reflect.Array.newInstance(component, n);
             for (int i = 0; i < n; i++) {
-                r[i] = (T) elements[i];
+                r[i] = (U) elements[i];
             }
             return r;
         } else {
             for (int i = 0; i < n; i++) {
-                a[i] = (T) elements[i];
+                a[i] = (U) elements[i];
             }
             if (a.length > n) {
                 a[n] = null;

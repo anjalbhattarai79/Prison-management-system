@@ -24,7 +24,7 @@ public class TrashBinOperation {
      * @param trashBin Stack containing deleted prisoners
      * @param deletedPrisoner The prisoner to add to trash
      */
-    public static void pushToTrash(SimpleStack<PrisonerModel> trashBin, PrisonerModel deletedPrisoner) {
+    public static void pushToTrash(SimpleStack trashBin, PrisonerModel deletedPrisoner) {
         trashBin.push(deletedPrisoner);
         System.out.println("\n[STACK] PUSH: " + deletedPrisoner.getName() + " → Moved to trash (Size: " + trashBin.size() + ")");
         System.out.println("        (LIFO - Last In, First Out: This prisoner will be restored first)\n");
@@ -38,7 +38,7 @@ public class TrashBinOperation {
      * @param prisonDetails Main list to restore prisoner to
      * @return The restored prisoner, or null if trash is empty
      */
-    public static PrisonerModel popFromTrash(SimpleStack<PrisonerModel> trashBin, LinkedList<PrisonerModel> prisonDetails) {
+    public static PrisonerModel popFromTrash(SimpleStack trashBin, LinkedList<PrisonerModel> prisonDetails) {
         // Check if trash is empty
         if (trashBin.isEmpty()) {
             JOptionPane.showMessageDialog(null,
@@ -49,7 +49,7 @@ public class TrashBinOperation {
         }
         
         // Peek at top element before popping
-        PrisonerModel topPrisoner = trashBin.peek();
+        PrisonerModel topPrisoner = (PrisonerModel) trashBin.peek();
         
         // Ask for confirmation
         int confirm = JOptionPane.showConfirmDialog(null,
@@ -67,7 +67,7 @@ public class TrashBinOperation {
         }
         
         // Pop from stack
-        PrisonerModel restoredPrisoner = trashBin.pop();
+        PrisonerModel restoredPrisoner = (PrisonerModel) trashBin.pop();
         System.out.println("\n[STACK] POP: " + restoredPrisoner.getName() + " ← Restored from trash (Size: " + trashBin.size() + ")");
         System.out.println("       (LIFO demonstrated: Most recently deleted prisoner restored first)\n");
         
@@ -92,7 +92,7 @@ public class TrashBinOperation {
      * @param trashBin Stack containing deleted prisoners
      * @return HTML formatted string of trash contents
      */
-    public static String viewTrashContents(SimpleStack<PrisonerModel> trashBin) {
+    public static String viewTrashContents(SimpleStack trashBin) {
         if (trashBin.isEmpty()) {
             return "<html><b>Trash Bin (Stack):</b><br>No deleted prisoners</html>";
         }
@@ -118,7 +118,7 @@ public class TrashBinOperation {
         contents.append("<br><i>Total in trash: ").append(trashBin.size()).append("</i>");
         contents.append("</html>");
         
-        PrisonerModel top = trashBin.peek();
+        PrisonerModel top = (PrisonerModel)trashBin.peek();
         System.out.println("Trash contains " + trashBin.size() + " prisoner(s) [Top: " + (top != null ? top.getName() : "None") + "]");
         
         return contents.toString();
@@ -130,7 +130,7 @@ public class TrashBinOperation {
      * @param trashBin Stack containing deleted prisoners
      * @return Number of prisoners in trash
      */
-    public static int getTrashSize(SimpleStack<PrisonerModel> trashBin) {
+    public static int getTrashSize(SimpleStack trashBin) {
         return trashBin.size();
     }
     
@@ -140,7 +140,7 @@ public class TrashBinOperation {
      * @param trashBin Stack containing deleted prisoners
      * @return true if trash is empty
      */
-    public static boolean isTrashEmpty(SimpleStack<PrisonerModel> trashBin) {
+    public static boolean isTrashEmpty(SimpleStack trashBin) {
         return trashBin.isEmpty();
     }
     
@@ -150,7 +150,7 @@ public class TrashBinOperation {
      * 
      * @param trashBin Stack containing deleted prisoners
      */
-    public static void emptyTrash(SimpleStack<PrisonerModel> trashBin) {
+    public static void emptyTrash(SimpleStack trashBin) {
         if (trashBin.isEmpty()) {
             JOptionPane.showMessageDialog(null,
                 "Trash bin is already empty!",

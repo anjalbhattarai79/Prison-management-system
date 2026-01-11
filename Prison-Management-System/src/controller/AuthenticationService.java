@@ -18,7 +18,7 @@ import model.PrisonerModel;
  * 
  * @author Anjal Bhattarai
  */
-public class AuthenticationService implements IAuthenticationService {
+public class AuthenticationService {
     
     // Hardcoded admin credentials (for coursework demonstration only)
     // In production: use secure password hashing and database storage
@@ -35,7 +35,6 @@ public class AuthenticationService implements IAuthenticationService {
         this.prisonController = prisonController;
     }
     
-    @Override
     public OperationResult<Boolean> authenticateAdmin(String username, String password) {
         // Validate inputs
         if (username == null || username.trim().isEmpty()) {
@@ -59,7 +58,6 @@ public class AuthenticationService implements IAuthenticationService {
         }
     }
     
-    @Override
     public OperationResult<PrisonerModel> authenticateFamilyPortal(int prisonerId, String familyCode) {
         // Validate family code input
         if (familyCode == null || familyCode.trim().isEmpty()) {
@@ -96,7 +94,6 @@ public class AuthenticationService implements IAuthenticationService {
         );
     }
     
-    @Override
     public OperationResult<Integer> validatePrisonerId(String prisonerIdStr) {
         if (prisonerIdStr == null || prisonerIdStr.trim().isEmpty()) {
             return OperationResult.failure("Prisoner ID cannot be empty");

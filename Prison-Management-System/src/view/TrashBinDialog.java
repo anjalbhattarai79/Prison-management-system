@@ -155,7 +155,7 @@ public class TrashBinDialog extends JDialog {
         // Clear existing rows
         tableModel.setRowCount(0);
         
-        SimpleStack<PrisonerModel> trashBin = controller.getTrashBin();
+        SimpleStack trashBin = controller.getTrashBin();
         int trashSize = trashBin.size();
         
         statusLabel.setText("Prisoners in trash: " + trashSize);
