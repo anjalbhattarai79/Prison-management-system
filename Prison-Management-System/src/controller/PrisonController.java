@@ -355,80 +355,288 @@ public class PrisonController {
     private void loadSampleNepalData() {
         System.out.println("Loading sample prisoner data...");
         
-        // Sample 1 - Active, Good Health
-        addPrisoner("Ram Bahadur Thapa", 32, "Male", "Tinkune-15, Kathmandu",
+        // Age distribution: Under 25 (15 prisoners), 25-45 (20 prisoners), 45+ (10 prisoners)
+        // Gender distribution: ~30 Male, ~15 Female
+        
+        // Under 25 - Males (10)
+        addPrisoner("Aditya Shrestha", 19, "Male", "Tinkune-15, Kathmandu",
                     "Theft", "Shoplifting from local store", 
                     LocalDate.of(2024, 3, 15), 18, "Central Jail, Kathmandu", 
                     "FAM101", getAbsoluteImagePath("1.jpg"), "Active");
         getPrisonerById(101).setHealthStatus("Good");
         
-        // Sample 2 - Active, Fair Health
-        addPrisoner("Sita Maya Gurung", 28, "Female", "Lakeside-6, Pokhara, Kaski",
-                    "Fraud", "Financial fraud in cooperative society",
-                    LocalDate.of(2024, 5, 20), 24, "Pokhara Jail, Kaski",
-                    "FAM102", getAbsoluteImagePath("2.jpg"), "Active");
-        getPrisonerById(102).setHealthStatus("Fair");
+        addPrisoner("Rohan Tamang", 22, "Male", "Boudha-7, Kathmandu",
+                    "Drug Possession", "Possession of marijuana",
+                    LocalDate.of(2024, 8, 10), 12, "Central Jail, Kathmandu",
+                    "FAM102", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(102).setHealthStatus("Good");
         
-        // Sample 3 - Released
-        addPrisoner("Bikash Sharma Poudel", 35, "Male", "Dharan-12, Sunsari",
-                    "Assault", "Physical assault during dispute",
-                    LocalDate.of(2023, 1, 10), 18, "Biratnagar Jail, Morang",
-                    "FAM103", getAbsoluteImagePath("3.jpg"), "Released");
-        getPrisonerById(103).setHealthStatus("Good");
+        addPrisoner("Suraj Karki", 20, "Male", "Dharan-12, Sunsari",
+                    "Assault", "Minor physical assault",
+                    LocalDate.of(2024, 9, 5), 6, "Biratnagar Jail, Morang",
+                    "FAM103", getAbsoluteImagePath("3.jpg"), "Active");
+        getPrisonerById(103).setHealthStatus("Fair");
         
-        // Sample 4 - Medical, Poor Health
-        addPrisoner("Anita Kumari Rai", 26, "Female", "Birtamod-8, Jhapa",
-                    "Embezzlement", "Misappropriation of office funds",
-                    LocalDate.of(2024, 1, 8), 36, "Biratnagar Jail, Morang",
-                    "FAM104", getAbsoluteImagePath("4.jpg"), "Medical");
-        getPrisonerById(104).setHealthStatus("Poor");
+        addPrisoner("Bibek Rai", 23, "Male", "Birtamod-8, Jhapa",
+                    "Vandalism", "Property damage",
+                    LocalDate.of(2024, 7, 20), 9, "Biratnagar Jail, Morang",
+                    "FAM104", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(104).setHealthStatus("Good");
         
-        // Sample 5 - Active, Critical Health
-        addPrisoner("Prakash Tamang", 42, "Male", "Bouddha-7, Kathmandu",
-                    "Drug Possession", "Possession of illegal narcotics",
-                    LocalDate.of(2023, 8, 22), 48, "Central Jail, Kathmandu",
-                    "FAM105", getAbsoluteImagePath("5.jpg"), "Active");
-        getPrisonerById(105).setHealthStatus("Critical");
+        addPrisoner("Manish Gurung", 21, "Male", "Pokhara-6, Kaski",
+                    "Theft", "Vehicle theft",
+                    LocalDate.of(2024, 6, 15), 15, "Pokhara Jail, Kaski",
+                    "FAM105", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(105).setHealthStatus("Good");
         
-        // Sample 6 - Transferred
-        addPrisoner("Sunita Devi Chaudhary", 30, "Female", "Nepalgunj-3, Banke",
-                    "Forgery", "Document forgery for land registration",
-                    LocalDate.of(2024, 2, 14), 20, "Nepalgunj Jail, Banke",
-                    "FAM106", getAbsoluteImagePath("default-prisoner.png"), "Transferred");
-        getPrisonerById(106).setHealthStatus("Good");
+        addPrisoner("Kiran Thapa", 24, "Male", "Chitwan-4, Chitwan",
+                    "Fraud", "Credit card fraud",
+                    LocalDate.of(2024, 5, 1), 18, "Bharatpur Jail, Chitwan",
+                    "FAM106", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(106).setHealthStatus("Fair");
         
-        // Sample 7 - Solitary, Fair Health
-        addPrisoner("Nirajan Karki Chhetri", 29, "Male", "Chitwan Bazaar-4, Chitwan",
-                    "Cyber Crime", "Online fraud and identity theft",
-                    LocalDate.of(2024, 6, 5), 28, "Bharatpur Jail, Chitwan",
-                    "FAM107", getAbsoluteImagePath("default-prisoner.png"), "Solitary");
-        getPrisonerById(107).setHealthStatus("Fair");
+        addPrisoner("Sanjay Magar", 22, "Male", "Butwal-11, Rupandehi",
+                    "Trespassing", "Illegal entry",
+                    LocalDate.of(2024, 10, 10), 6, "Bhairahawa Jail, Rupandehi",
+                    "FAM107", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(107).setHealthStatus("Good");
         
-        // Sample 8 - Parole, Good Health
-        addPrisoner("Gita Kumari Adhikari", 38, "Female", "Butwal-11, Rupandehi",
-                    "Smuggling", "Smuggling goods across border",
-                    LocalDate.of(2023, 6, 18), 30, "Bhairahawa Jail, Rupandehi",
-                    "FAM108", getAbsoluteImagePath("default-prisoner.png"), "Parole");
+        addPrisoner("Dipesh Limbu", 20, "Male", "Dhankuta-9, Dhankuta",
+                    "Theft", "Shoplifting",
+                    LocalDate.of(2024, 4, 25), 12, "Biratnagar Jail, Morang",
+                    "FAM108", getAbsoluteImagePath("default-prisoner.png"), "Released");
         getPrisonerById(108).setHealthStatus("Good");
         
-        // Sample 9 - Active, Fair Health
-        addPrisoner("Dinesh Bahadur Magar", 45, "Male", "Hetauda-10, Makwanpur",
-                    "Corruption", "Bribery and corruption in public office",
-                    LocalDate.of(2024, 4, 12), 60, "Central Jail, Kathmandu",
+        addPrisoner("Ashish Chaudhary", 23, "Male", "Nepalgunj-3, Banke",
+                    "Public Disorder", "Public intoxication and disturbance",
+                    LocalDate.of(2024, 11, 1), 3, "Nepalgunj Jail, Banke",
                     "FAM109", getAbsoluteImagePath("default-prisoner.png"), "Active");
-        getPrisonerById(109).setHealthStatus("Fair");
+        getPrisonerById(109).setHealthStatus("Good");
         
-        // Sample 10 - Released
-        addPrisoner("Krishna Kumari Shrestha", 33, "Female", "Bhaktapur Durbar-9, Bhaktapur",
-                    "Robbery", "Armed robbery of jewelry shop",
-                    LocalDate.of(2022, 9, 25), 24, "Central Jail, Kathmandu",
-                    "FAM110", getAbsoluteImagePath("default-prisoner.png"), "Released");
-        getPrisonerById(110).setHealthStatus("Good");
+        addPrisoner("Prakash Thakuri", 24, "Male", "Hetauda-10, Makwanpur",
+                    "Burglary", "Breaking and entering",
+                    LocalDate.of(2024, 2, 14), 20, "Central Jail, Kathmandu",
+                    "FAM110", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(110).setHealthStatus("Fair");
         
-        System.out.println("✓ Successfully loaded 10 sample prisoner records");
-        System.out.println("  - Names: Nepali local names from various ethnic groups");
-        System.out.println("  - Addresses: Nepal cities and districts");
-        System.out.println("  - Prisons: Actual Nepal prison locations");
+        // Under 25 - Females (5)
+        addPrisoner("Anita Rai", 21, "Female", "Lakeside-6, Pokhara",
+                    "Fraud", "Financial fraud",
+                    LocalDate.of(2024, 5, 20), 24, "Pokhara Jail, Kaski",
+                    "FAM111", getAbsoluteImagePath("2.jpg"), "Active");
+        getPrisonerById(111).setHealthStatus("Fair");
+        
+        addPrisoner("Kritika Adhikari", 23, "Female", "Bhaktapur-9, Bhaktapur",
+                    "Theft", "Jewelry theft",
+                    LocalDate.of(2024, 6, 5), 15, "Central Jail, Kathmandu",
+                    "FAM112", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(112).setHealthStatus("Good");
+        
+        addPrisoner("Ritu Sharma", 22, "Female", "Biratnagar-8, Morang",
+                    "Embezzlement", "Misappropriation of funds",
+                    LocalDate.of(2024, 7, 18), 18, "Biratnagar Jail, Morang",
+                    "FAM113", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(113).setHealthStatus("Good");
+        
+        addPrisoner("Sunita Karki", 24, "Female", "Butwal-5, Rupandehi",
+                    "Forgery", "Document forgery",
+                    LocalDate.of(2024, 3, 10), 12, "Bhairahawa Jail, Rupandehi",
+                    "FAM114", getAbsoluteImagePath("default-prisoner.png"), "Released");
+        getPrisonerById(114).setHealthStatus("Good");
+        
+        addPrisoner("Sapana Thapa", 20, "Female", "Chitwan-11, Chitwan",
+                    "Cyber Crime", "Social media fraud",
+                    LocalDate.of(2024, 9, 8), 15, "Bharatpur Jail, Chitwan",
+                    "FAM115", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(115).setHealthStatus("Fair");
+        
+        // 25-45 Age Group - Males (14)
+        addPrisoner("Ram Bahadur Thapa", 32, "Male", "Tinkune-15, Kathmandu",
+                    "Theft", "Grand larceny", 
+                    LocalDate.of(2024, 1, 10), 24, "Central Jail, Kathmandu", 
+                    "FAM116", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(116).setHealthStatus("Good");
+        
+        addPrisoner("Prakash Tamang", 42, "Male", "Bouddha-7, Kathmandu",
+                    "Drug Trafficking", "Distribution of illegal narcotics",
+                    LocalDate.of(2023, 8, 22), 60, "Central Jail, Kathmandu",
+                    "FAM117", getAbsoluteImagePath("5.jpg"), "Active");
+        getPrisonerById(117).setHealthStatus("Critical");
+        
+        addPrisoner("Bikash Poudel", 35, "Male", "Dharan-12, Sunsari",
+                    "Assault", "Aggravated assault",
+                    LocalDate.of(2023, 1, 10), 36, "Biratnagar Jail, Morang",
+                    "FAM118", getAbsoluteImagePath("default-prisoner.png"), "Parole");
+        getPrisonerById(118).setHealthStatus("Good");
+        
+        addPrisoner("Nirajan Chhetri", 29, "Male", "Chitwan Bazaar-4, Chitwan",
+                    "Cyber Crime", "Hacking and identity theft",
+                    LocalDate.of(2024, 6, 5), 36, "Bharatpur Jail, Chitwan",
+                    "FAM119", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(119).setHealthStatus("Fair");
+        
+        addPrisoner("Dinesh Magar", 38, "Male", "Hetauda-10, Makwanpur",
+                    "Corruption", "Bribery and corruption",
+                    LocalDate.of(2024, 4, 12), 60, "Central Jail, Kathmandu",
+                    "FAM120", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(120).setHealthStatus("Fair");
+        
+        addPrisoner("Suresh Rana", 40, "Male", "Pokhara-10, Kaski",
+                    "Human Trafficking", "Trafficking of minors",
+                    LocalDate.of(2023, 5, 15), 120, "Pokhara Jail, Kaski",
+                    "FAM121", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(121).setHealthStatus("Fair");
+        
+        addPrisoner("Rajesh Basnet", 34, "Male", "Butwal-7, Rupandehi",
+                    "Robbery", "Armed robbery",
+                    LocalDate.of(2023, 11, 20), 48, "Bhairahawa Jail, Rupandehi",
+                    "FAM122", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(122).setHealthStatus("Good");
+        
+        addPrisoner("Gopal Adhikari", 36, "Male", "Biratnagar-5, Morang",
+                    "Murder", "Manslaughter during altercation",
+                    LocalDate.of(2022, 3, 8), 180, "Biratnagar Jail, Morang",
+                    "FAM123", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(123).setHealthStatus("Poor");
+        
+        addPrisoner("Naresh Bhattarai", 33, "Male", "Kathmandu-28, Kathmandu",
+                    "Extortion", "Threatening and extortion",
+                    LocalDate.of(2024, 2, 22), 30, "Central Jail, Kathmandu",
+                    "FAM124", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(124).setHealthStatus("Good");
+        
+        addPrisoner("Kamal Dahal", 41, "Male", "Dhankuta-3, Dhankuta",
+                    "Smuggling", "Cross-border smuggling",
+                    LocalDate.of(2023, 12, 5), 48, "Biratnagar Jail, Morang",
+                    "FAM125", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(125).setHealthStatus("Good");
+        
+        addPrisoner("Ramesh Gurung", 37, "Male", "Chitwan-15, Chitwan",
+                    "Kidnapping", "Abduction for ransom",
+                    LocalDate.of(2023, 7, 10), 96, "Bharatpur Jail, Chitwan",
+                    "FAM126", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(126).setHealthStatus("Fair");
+        
+        addPrisoner("Umesh Karki", 30, "Male", "Nepalgunj-8, Banke",
+                    "Drug Possession", "Large quantity narcotics possession",
+                    LocalDate.of(2024, 8, 15), 36, "Nepalgunj Jail, Banke",
+                    "FAM127", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(127).setHealthStatus("Good");
+        
+        addPrisoner("Bikram Thapa", 31, "Male", "Lalitpur-3, Lalitpur",
+                    "Assault", "Domestic violence",
+                    LocalDate.of(2024, 9, 20), 18, "Central Jail, Kathmandu",
+                    "FAM128", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(128).setHealthStatus("Fair");
+        
+        addPrisoner("Sanjib Rai", 44, "Male", "Jhapa-10, Jhapa",
+                    "Fraud", "Insurance fraud",
+                    LocalDate.of(2024, 1, 30), 24, "Biratnagar Jail, Morang",
+                    "FAM129", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(129).setHealthStatus("Good");
+        
+        // 25-45 Age Group - Females (6)
+        addPrisoner("Sita Gurung", 28, "Female", "Lakeside-6, Pokhara",
+                    "Fraud", "Cooperative society fraud",
+                    LocalDate.of(2024, 5, 20), 24, "Pokhara Jail, Kaski",
+                    "FAM130", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(130).setHealthStatus("Fair");
+        
+        addPrisoner("Sunita Chaudhary", 30, "Female", "Nepalgunj-3, Banke",
+                    "Forgery", "Land document forgery",
+                    LocalDate.of(2024, 2, 14), 24, "Nepalgunj Jail, Banke",
+                    "FAM131", getAbsoluteImagePath("default-prisoner.png"), "Transferred");
+        getPrisonerById(131).setHealthStatus("Good");
+        
+        addPrisoner("Gita Adhikari", 38, "Female", "Butwal-11, Rupandehi",
+                    "Smuggling", "Gold smuggling",
+                    LocalDate.of(2023, 6, 18), 36, "Bhairahawa Jail, Rupandehi",
+                    "FAM132", getAbsoluteImagePath("default-prisoner.png"), "Parole");
+        getPrisonerById(132).setHealthStatus("Good");
+        
+        addPrisoner("Krishna Shrestha", 33, "Female", "Bhaktapur-9, Bhaktapur",
+                    "Robbery", "Jewelry shop robbery",
+                    LocalDate.of(2022, 9, 25), 48, "Central Jail, Kathmandu",
+                    "FAM133", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(133).setHealthStatus("Good");
+        
+        addPrisoner("Puja Tamang", 27, "Female", "Kathmandu-16, Kathmandu",
+                    "Drug Trafficking", "Heroin trafficking",
+                    LocalDate.of(2023, 10, 5), 72, "Central Jail, Kathmandu",
+                    "FAM134", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(134).setHealthStatus("Poor");
+        
+        addPrisoner("Maya Limbu", 35, "Female", "Dharan-8, Sunsari",
+                    "Murder", "Conspiracy to commit murder",
+                    LocalDate.of(2021, 4, 12), 180, "Biratnagar Jail, Morang",
+                    "FAM135", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(135).setHealthStatus("Fair");
+        
+        // 45+ Age Group - Males (7)
+        addPrisoner("Shyam Prasad Sharma", 52, "Male", "Kathmandu-20, Kathmandu",
+                    "Corruption", "Government official corruption",
+                    LocalDate.of(2023, 3, 15), 84, "Central Jail, Kathmandu",
+                    "FAM136", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(136).setHealthStatus("Fair");
+        
+        addPrisoner("Hari Bahadur KC", 48, "Male", "Pokhara-12, Kaski",
+                    "Murder", "Premeditated murder",
+                    LocalDate.of(2020, 8, 20), 240, "Pokhara Jail, Kaski",
+                    "FAM137", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(137).setHealthStatus("Poor");
+        
+        addPrisoner("Mohan Khadka", 55, "Male", "Biratnagar-10, Morang",
+                    "Fraud", "Land fraud and forgery",
+                    LocalDate.of(2022, 5, 10), 72, "Biratnagar Jail, Morang",
+                    "FAM138", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(138).setHealthStatus("Good");
+        
+        addPrisoner("Bishnu Dhakal", 50, "Male", "Chitwan-7, Chitwan",
+                    "Human Trafficking", "International trafficking ring",
+                    LocalDate.of(2021, 11, 25), 180, "Bharatpur Jail, Chitwan",
+                    "FAM139", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(139).setHealthStatus("Fair");
+        
+        addPrisoner("Ganesh Paudel", 46, "Male", "Butwal-3, Rupandehi",
+                    "Extortion", "Organized extortion racket",
+                    LocalDate.of(2023, 2, 8), 96, "Bhairahawa Jail, Rupandehi",
+                    "FAM140", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(140).setHealthStatus("Good");
+        
+        addPrisoner("Keshav Oli", 49, "Male", "Dhankuta-5, Dhankuta",
+                    "Assault", "Attempted murder",
+                    LocalDate.of(2022, 7, 14), 120, "Biratnagar Jail, Morang",
+                    "FAM141", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(141).setHealthStatus("Fair");
+        
+        addPrisoner("Mahesh Pandey", 53, "Male", "Nepalgunj-7, Banke",
+                    "Smuggling", "Arms smuggling",
+                    LocalDate.of(2021, 9, 30), 144, "Nepalgunj Jail, Banke",
+                    "FAM142", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(142).setHealthStatus("Poor");
+        
+        // 45+ Age Group - Females (3)
+        addPrisoner("Radha Devi Joshi", 47, "Female", "Lalitpur-8, Lalitpur",
+                    "Murder", "Murder of spouse",
+                    LocalDate.of(2022, 1, 18), 180, "Central Jail, Kathmandu",
+                    "FAM143", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(143).setHealthStatus("Good");
+        
+        addPrisoner("Saraswati Thapa", 51, "Female", "Pokhara-4, Kaski",
+                    "Corruption", "Embezzlement of public funds",
+                    LocalDate.of(2023, 4, 22), 60, "Pokhara Jail, Kaski",
+                    "FAM144", getAbsoluteImagePath("4.jpg"), "Medical");
+        getPrisonerById(144).setHealthStatus("Critical");
+        
+        addPrisoner("Laxmi Devkota", 49, "Female", "Bhaktapur-3, Bhaktapur",
+                    "Fraud", "Banking and financial fraud",
+                    LocalDate.of(2023, 8, 5), 48, "Central Jail, Kathmandu",
+                    "FAM145", getAbsoluteImagePath("default-prisoner.png"), "Active");
+        getPrisonerById(145).setHealthStatus("Fair");
+        
+        System.out.println("✓ Successfully loaded 45 sample prisoner records");
+        System.out.println("  - Age Distribution: Under 25 (15), 25-45 (20), 45+ (10)");
+        System.out.println("  - Gender Distribution: Male (31), Female (14)");
         System.out.println("  - Status variety: Active, Released, Medical, Transferred, Solitary, Parole");
         System.out.println("  - Health variety: Good, Fair, Poor, Critical");
         System.out.println("╚════════════════════════════════════════════════════════════╝\n");
