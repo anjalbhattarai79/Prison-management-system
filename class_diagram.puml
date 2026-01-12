@@ -1,0 +1,383 @@
+@startuml PrisonManagementSystem
+title Prison Management System - Class Diagram
+
+' ==================== MODEL LAYER ====================
+package "model" {
+    class PrisonerModel {
+        -prisonerId: int
+        -name: String
+        -age: int
+        -gender: String
+        -address: String
+        -crimeType: String
+        -crimeDescription: String
+        -admissionDate: LocalDate
+        -sentenceDuration: int
+        -releaseDate: LocalDate
+        -status: String
+        -prisonLocation: String
+        -healthStatus: String
+        -familyCode: String
+        -photoPath: String
+        --
+        +PrisonerModel(...)
+        +getPrisonerId(): int
+        +getName(): String
+        +setName(String): void
+        +getAge(): int
+        +setAge(int): void
+        +getGender(): String
+        +setGender(String): void
+        +getStatus(): String
+        +setStatus(String): void
+        +getReleaseDate(): LocalDate
+        +getMonthsRemaining(): int
+    }
+
+    class Activity {
+        -action: String
+        -prisonerName: String
+        -prisonerId: int
+        -timestamp: LocalDateTime
+        --
+        +Activity(String, String, int)
+        +getAction(): String
+        +getPrisonerName(): String
+        +getPrisonerId(): int
+        +getTimestamp(): LocalDateTime
+        +getFormattedTime(): String
+        +toString(): String
+    }
+
+    class VisitRequest {
+        -requestId: int
+        -prisonerId: int
+        -prisonerName: String
+        -visitorName: String
+        -relationship: String
+        -preferredDate: LocalDate
+        -purpose: String
+        -status: String
+        -requestDateTime: LocalDateTime
+        -adminNotes: String
+        -nextRequestId: int {static}
+        --
+        +VisitRequest(...)
+        +getRequestId(): int
+        +getPrisonerId(): int
+        +getVisitorName(): String
+        +getStatus(): String
+        +setStatus(String): void
+        +getAdminNotes(): String
+        +setAdminNotes(String): void
+    }
+
+    class OperationResult<T> {
+        -success: boolean
+        -data: T
+        -errorMessage: String
+        --
+        +isSuccess(): boolean
+        +getData(): T
+        +getErrorMessage(): String
+        +{static}success(T): OperationResult
+        +{static}failure(String): OperationResult
+    }
+
+    class ValidationResult {
+        -isValid: boolean
+        -fieldErrors: Map<String, String>
+        --
+        +isValid(): boolean
+        +addError(String, String): void
+        +getErrors(): Map<String, String>
+    }
+}
+
+' ==================== CONTROLLER LAYER ====================
+package "controller" {
+    class PrisonController {
+        -prisonDetails: LinkedList<PrisonerModel>
+        -recentlyAddedQueue: SimpleQueue
+        -trashBin: SimpleStack
+        -recentActivities: SimpleQueue
+        -visitRequests: LinkedList<VisitRequest>
+        -nextPrisonerId: int
+        -MAX_ACTIVITIES: int {static}
+        --
+        +PrisonController()
+        +addPrisoner(...): boolean
+        +updatePrisoner(...): boolean
+        +deletePrisoner(int): boolean
+        +getPrisonerById(int): PrisonerModel
+        +getAllPrisoners(): LinkedList<PrisonerModel>
+        +getNextAvailableId(): int
+        +loadPrisonerToTable(JTable): void
+        +addVisitRequest(VisitRequest): boolean
+        +approveVisitRequest(int): boolean
+        +declineVisitRequest(int, String): boolean
+        +getAllVisitRequests(): LinkedList<VisitRequest>
+        +getPendingRequests(): LinkedList<VisitRequest>
+        +restoreLastDeleted(): boolean
+        +emptyTrash(): void
+        +getTrashSize(): int
+        +logActivity(String, String, int): void
+        +getRecentActivities(): String
+        +loadSampleNepalData(): void
+        -loadSampleNepalData(): void
+    }
+
+    class CRUD {
+        --
+        +{static}addPrisoner(...): OperationResult<Integer>
+        +{static}getPrisonerById(...): PrisonerModel
+        +{static}getAllPrisoners(...): LinkedList
+        +{static}updatePrisoner(...): OperationResult<Boolean>
+        +{static}deletePrisoner(...): OperationResult<Boolean>
+        +{static}getNextAvailableId(...): int
+        +{static}duplicateCheck(...): boolean
+        +{static}getRecentActivities(...): String
+        +{static}loadSampleData(...): void
+    }
+
+    class SimpleStack {
+        -elements: Object[]
+        -top: int
+        -MAX_SIZE: int {static}
+        --
+        +push(Object): void
+        +pop(): Object
+        +peek(): Object
+        +top(): Object
+        +isEmpty(): boolean
+        +size(): int
+        +clear(): void
+        +toArray(U[]): U[]
+    }
+
+    class SimpleQueue {
+        -items: ArrayList<Object>
+        -head: int
+        -rear: int
+        --
+        +enqueue(Object): void
+        +dequeue(): Object
+        +peek(): Object
+        +front(): Object
+        +rear(): Object
+        +isEmpty(): boolean
+        +size(): int
+        +clear(): void
+        +toArray(U[]): U[]
+        -compactIfNeeded(): void
+    }
+
+    class PrisonerValidator {
+        --
+        +{static}isValidName(String): boolean
+        +{static}isValidAge(int): boolean
+        +{static}isValidGender(String): boolean
+        +{static}isValidAddress(String): boolean
+        +{static}isValidCrime(String): boolean
+        +{static}isValidDate(LocalDate): boolean
+        +{static}validatePrisoner(...): ValidationResult
+    }
+
+    class SearchOperation {
+        --
+        +{static}searchByName(...): LinkedList<PrisonerModel>
+        +{static}searchById(...): PrisonerModel
+        +{static}searchByStatus(...): LinkedList<PrisonerModel>
+        +{static}searchByCrime(...): LinkedList<PrisonerModel>
+        +{static}searchByLocation(...): LinkedList<PrisonerModel>
+        +{static}advancedSearch(...): LinkedList<PrisonerModel>
+    }
+
+    class SortOperation {
+        --
+        +{static}sortByName(...): void
+        +{static}sortById(...): void
+        +{static}sortByAge(...): void
+        +{static}sortByAdmissionDate(...): void
+        +{static}sortByReleaseDate(...): void
+        +{static}sortByStatus(...): void
+        +{static}reverseSorted(...): void
+    }
+
+    class TrashBinOperation {
+        --
+        +{static}restoreFromTrash(SimpleStack): Object
+        +{static}emptyTrash(SimpleStack): void
+        +{static}getTrashSize(SimpleStack): int
+        +{static}getTrashContents(SimpleStack): Object[]
+    }
+
+    class SessionManager {
+        -currentUser: String
+        -isLoggedIn: boolean
+        -lastActivity: LocalDateTime
+        --
+        +login(String, String): boolean
+        +logout(): void
+        +getCurrentUser(): String
+        +isSessionActive(): boolean
+        +hasPermission(String): boolean
+    }
+
+    class AuthenticationService {
+        --
+        +{static}authenticate(String, String): boolean
+        +{static}validateCredentials(String): boolean
+        +{static}changePassword(String, String): boolean
+        +{static}resetPassword(String): String
+    }
+}
+
+' ==================== VIEW LAYER ====================
+package "view" {
+    class MainFrame {
+        -prisonersTable: JTable
+        -searchField: JTextField
+        -filterCombo: JComboBox
+        -statusLabel: JLabel
+        -controller: PrisonController
+        -sessionManager: SessionManager
+        --
+        +MainFrame()
+        +setupUI(): void
+        +loadPrisonersIntoTable(): void
+        +refreshTable(): void
+        +searchPrisoners(): void
+        +showAddDialog(): void
+        +showEditDialog(int): void
+        +showDeleteConfirm(int): void
+        +showTrashBin(): void
+        +showVisitRequests(): void
+    }
+
+    class PrisonerDialogHelper {
+        -nameField: JTextField
+        -ageField: JSpinner
+        -genderCombo: JComboBox
+        -addressArea: JTextArea
+        -crimeTypeCombo: JComboBox
+        -crimeDescArea: JTextArea
+        -admissionDateChooser: JDateChooser
+        -sentenceField: JSpinner
+        -locationCombo: JComboBox
+        -familyCodeField: JTextField
+        -photoPathField: JTextField
+        -statusCombo: JComboBox
+        --
+        +PrisonerDialogHelper(JFrame)
+        +showAddDialog(): PrisonerModel
+        +showEditDialog(PrisonerModel): boolean
+        +validateInput(): boolean
+        +resetFields(): void
+    }
+
+    class TableButtonRenderer {
+        --
+        +getTableCellRendererComponent(...): Component
+    }
+
+    class TableButtonEditor {
+        --
+        +getTableCellEditorComponent(...): Component
+        +getCellEditorValue(): Object
+    }
+
+    class TrashBinDialog {
+        -trashTable: JTable
+        -restoreButton: JButton
+        -emptyButton: JButton
+        -trashBin: SimpleStack
+        --
+        +TrashBinDialog(JFrame, SimpleStack)
+        +loadTrashIntoTable(): void
+        +restoreSelected(): void
+        +emptyTrash(): void
+        +refreshDisplay(): void
+    }
+
+    class ViewDetailsDialog {
+        -prisonerDetails: JPanel
+        -photoLabel: JLabel
+        -infoText: JTextArea
+        -activityLog: JTextArea
+        --
+        +ViewDetailsDialog(JFrame, PrisonerModel)
+        +displayPrisonerInfo(): void
+        +displayPhotoIfExists(): void
+        +showActivityLog(): void
+        +printDetails(): void
+    }
+
+    class VisitRequestsDialog {
+        -requestsTable: JTable
+        -approveButton: JButton
+        -declineButton: JButton
+        -notesArea: JTextArea
+        -filterCombo: JComboBox
+        --
+        +VisitRequestsDialog(JFrame)
+        +loadRequests(): void
+        +showApproveDialog(int): void
+        +showDeclineDialog(int): void
+        +filterByStatus(String): void
+        +refreshRequests(): void
+    }
+}
+
+' ==================== RELATIONSHIPS ====================
+
+' PrisonController uses
+PrisonController --> PrisonerModel : manages
+PrisonController --> Activity : logs
+PrisonController --> VisitRequest : manages
+PrisonController --> SimpleStack : trashBin
+PrisonController --> SimpleQueue : recentlyAdded & recentActivities
+PrisonController --> SessionManager : authentication
+
+' CRUD operations
+PrisonController --> CRUD : delegates to
+CRUD --> PrisonerModel : creates/modifies
+CRUD --> OperationResult : returns
+CRUD --> Activity : creates
+
+' Data Structure usage
+PrisonController --> SimpleStack : uses for trash
+PrisonController --> SimpleQueue : uses for activities
+
+' Validation
+CRUD --> PrisonerValidator : validates
+PrisonerValidator --> ValidationResult : returns
+
+' Search & Sort
+PrisonController --> SearchOperation : delegates to
+PrisonController --> SortOperation : delegates to
+PrisonController --> TrashBinOperation : delegates to
+
+' MainFrame relationships
+MainFrame --> PrisonController : uses
+MainFrame --> SessionManager : uses for auth
+MainFrame --> PrisonerDialogHelper : creates dialogs
+MainFrame --> TrashBinDialog : shows trash
+MainFrame --> ViewDetailsDialog : shows details
+MainFrame --> VisitRequestsDialog : manages visits
+MainFrame --> SearchOperation : delegates search
+MainFrame --> SortOperation : delegates sort
+
+' Dialog relationships
+PrisonerDialogHelper --> PrisonerModel : creates/returns
+TrashBinDialog --> SimpleStack : displays
+TrashBinDialog --> TrashBinOperation : uses
+ViewDetailsDialog --> PrisonerModel : displays
+VisitRequestsDialog --> VisitRequest : manages
+VisitRequestsDialog --> PrisonController : updates
+
+' Table components
+MainFrame --> TableButtonRenderer : uses
+MainFrame --> TableButtonEditor : uses
+
+@enduml
