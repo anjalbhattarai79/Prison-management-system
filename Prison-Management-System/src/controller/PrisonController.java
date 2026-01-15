@@ -16,10 +16,10 @@ import model.VisitRequest;
 public class PrisonController {
     
     private LinkedList<PrisonerModel> prisonDetails = new LinkedList<>();
-    private SimpleQueue recentlyAddedQueue = new SimpleQueue();
-    private SimpleStack trashBin = new SimpleStack(); // Custom Stack for deleted prisoners
-    private SimpleQueue recentActivities = new SimpleQueue(); // Activity tracking
     private LinkedList<VisitRequest> visitRequests = new LinkedList<>(); // Visit requests
+    private SimpleQueue recentlyAddedQueue = new SimpleQueue();
+    private SimpleQueue recentActivities = new SimpleQueue(); // Activity tracking
+    private SimpleStack trashBin = new SimpleStack(); // Custom Stack for deleted prisoners
     private static final int MAX_ACTIVITIES = 10; // Maximum activities to track
     private int nextPrisonerId = 101; // Start at 101
     

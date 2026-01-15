@@ -124,7 +124,13 @@ public class SearchOperation {
             if (searchType.contains("Binary Search")) {
                 // Binary Search for ID
                 int searchId = Integer.parseInt(searchTerm.trim());
-                PrisonerModel found = binarySearchById(prisonDetails, searchId);
+                
+                // Binary search REQUIRES sorted data - sort by ID first
+                System.out.println("[Search] Sorting data by ID before binary search...");
+                LinkedList<PrisonerModel> sortedData = SortOperation.sortPrisoners(
+                    prisonDetails, "Prisoner ID", true);
+                
+                PrisonerModel found = binarySearchById(sortedData, searchId);
                 if (found != null) {
                     results.add(found);
                     System.out.println("[Search] Found prisoner with ID: " + searchId);

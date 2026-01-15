@@ -273,6 +273,20 @@ public class MainFrame extends javax.swing.JFrame {
                 return;
             }
             
+            // Additional validation: if user selected Binary Search (ID search),
+            // ensure the search term is a valid integer. This prevents a
+            // NumberFormatException in the search logic and lets us show
+            // a clear message to the user instead of just logging to console.
+            if (searchType != null && searchType.contains("Binary Search")) {
+                if (!searchTerm.matches("\\d+")) {
+                    JOptionPane.showMessageDialog(this,
+                        "Please enter a numeric Prisoner ID for Binary Search.",
+                        "Invalid ID",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+            
             // Call controller's search method
             LinkedList<PrisonerModel> results = controller.searchPrisoners(searchType, searchTerm);
             
@@ -285,6 +299,14 @@ public class MainFrame extends javax.swing.JFrame {
                     "Search complete!\nFound " + results.size() + " result(s)\n\n" +
                     "Check console output to see the search algorithm in action.",
                     "Search Success",
+                    JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                // No results found (including valid but non-existing ID or
+                // no name/crime matches). Show a friendly message so the
+                // user gets feedback instead of seeing nothing happen.
+                JOptionPane.showMessageDialog(this,
+                    "No prisoners found matching your search.",
+                    "No Results",
                     JOptionPane.INFORMATION_MESSAGE);
             }
         });
